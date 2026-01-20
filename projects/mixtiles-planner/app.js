@@ -738,9 +738,8 @@ function rotateTile(tileId) {
 
 function checkSpacingViolation(tile, x, y, excludeTileId = null) {
     const spacing = AppState.settings.minSpacing;
-    if (spacing === 0) return { valid: true };
 
-    // Create expanded bounding box for the tile
+    // Create expanded bounding box for the tile (with spacing buffer if set)
     const tileBox = {
         left: x - spacing,
         right: x + tile.width + spacing,
