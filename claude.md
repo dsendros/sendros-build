@@ -105,3 +105,6 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 **Remaining Features:**
 - [ ] **Image upload** — Preview actual photos on tiles
 - [ ] **Preset layouts** — Load predefined arrangements
+
+#### Project 4 - Columbia Heights Station Alerts
+- Raspberry Pi setup with train times and maybe other station alerts for Columbia Heights
