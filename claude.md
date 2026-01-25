@@ -10,6 +10,10 @@ sendros-build-website/
 ├── styles.css                      # All styling and theming
 ├── claude.md                       # This documentation
 └── projects/
+    ├── india-learning/
+    │   ├── index.html              # India quiz app
+    │   ├── styles.css              # App-specific styles
+    │   └── app.js                  # Application JavaScript (vanilla JS)
     └── mixtiles-planner/
         ├── index.html              # Mixtiles planner app
         ├── styles.css              # App-specific styles
@@ -86,8 +90,20 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - Transition site off squarespace
 
 #### Project 2 - India Quizzes
-- Take from Claude and upload here
-- Improve map section
+
+**Completed:**
+- [x] Split into separate HTML, CSS, and JS files
+- [x] Converted from React to vanilla JavaScript (consistent with mixtiles-planner)
+- [x] Match style to rest of site (uses site CSS variables, dark/light mode support)
+- [x] Site navigation header with links back to main site
+- [x] Three quiz modes: Map Quiz, Capital Cities Quiz, Regions Quiz
+- [x] System preference detection for dark/light mode
+
+**Remaining:**
+- [ ] **Fix map quiz** — Current SVG map is not geographically accurate. Need to source or create a proper SVG map of India with correct state boundaries and positions. The map should:
+	- Show accurate geographical shapes and positions for all 28 states
+	- Have each state as a separate `<path>` with `data-state` attribute matching state names
+	- Support highlighting (yellow), correct (green), and wrong (red) states
 
 #### Project 3 - Mixtiles Planner
 
@@ -101,6 +117,7 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] **Cost calculator** — Shows prices in palette and total cost in Layout Stats
 - [x] **Improved tile movement** — Tiles can be dragged freely (even overlapping), with red visual feedback when in invalid position; auto-adjusts to nearest valid position on drop
 - [x] **Help menu** — Question mark icon in top-right of wall panel opens modal with usage instructions
+- [x] **Improved tile placement** - Tiles can't be placed on top of each other (even when min spacing is 0)
 
 **Remaining Features:**
 - [ ] **Image upload** — Preview actual photos on tiles

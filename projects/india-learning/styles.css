@@ -1,0 +1,352 @@
+/* Indian States Quiz - App-specific styles */
+/* Inherits base theming from ../../styles.css */
+
+/* Quiz-specific color extensions */
+:root {
+    --quiz-accent: #ea580c;
+    --quiz-accent-light: #fed7aa;
+    --quiz-success: #22c55e;
+    --quiz-success-bg: #dcfce7;
+    --quiz-error: #ef4444;
+    --quiz-error-bg: #fee2e2;
+    --quiz-highlight: #fbbf24;
+    --map-bg: #eff6ff;
+    --map-state: #e5e7eb;
+}
+
+.dark-mode {
+    --quiz-accent: #f97316;
+    --quiz-accent-light: #7c2d12;
+    --quiz-success: #4ade80;
+    --quiz-success-bg: #14532d;
+    --quiz-error: #f87171;
+    --quiz-error-bg: #7f1d1d;
+    --quiz-highlight: #fcd34d;
+    --map-bg: #1e3a5f;
+    --map-state: #374151;
+}
+
+/* Page Layout */
+.quiz-page {
+    padding: 20px;
+    padding-top: 80px;
+    min-height: 100vh;
+}
+
+/* Menu Screen */
+.quiz-menu {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.quiz-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.quiz-title h1 {
+    font-size: 2.5rem;
+    color: var(--quiz-accent);
+    margin-bottom: 0.5rem;
+}
+
+.quiz-title p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.quiz-option-card {
+    background: var(--background-color);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    text-align: center;
+    width: 100%;
+}
+
+.quiz-option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.quiz-option-card .icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.75rem;
+}
+
+.quiz-option-card .icon.map { color: #3b82f6; }
+.quiz-option-card .icon.book { color: var(--quiz-accent); }
+.quiz-option-card .icon.shuffle { color: #16a34a; }
+
+.quiz-option-card h2 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.quiz-option-card p {
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* Game Screen */
+.quiz-game {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-header span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.quiz-header .score {
+    color: var(--quiz-accent);
+}
+
+.quiz-card {
+    background: var(--background-color);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+}
+
+.quiz-question {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Map Display */
+.quiz-map {
+    background: var(--map-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+/* SVG Map Styles */
+.india-map {
+    display: block;
+    max-width: 400px;
+    height: auto;
+    margin: 0 auto;
+}
+
+.india-map path {
+    fill: var(--map-state);
+    stroke: var(--text-color);
+    stroke-width: 0.5;
+    transition: fill 0.2s ease;
+}
+
+.india-map path.highlighted {
+    fill: var(--quiz-highlight);
+    stroke: var(--quiz-accent);
+    stroke-width: 1.5;
+}
+
+.india-map path.correct {
+    fill: var(--quiz-success);
+    stroke: var(--quiz-success);
+    stroke-width: 1.5;
+}
+
+.india-map path.wrong {
+    fill: var(--quiz-error);
+    stroke: var(--quiz-error);
+    stroke-width: 1.5;
+}
+
+/* Answer Options */
+.quiz-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.quiz-answer-btn {
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    background: var(--card-background);
+    color: var(--primary-color);
+}
+
+.quiz-answer-btn:hover:not(:disabled) {
+    background: var(--quiz-accent-light);
+}
+
+.quiz-answer-btn:disabled {
+    cursor: default;
+}
+
+.quiz-answer-btn.correct {
+    background: var(--quiz-success);
+    color: white;
+}
+
+.quiz-answer-btn.wrong {
+    background: var(--quiz-error);
+    color: white;
+}
+
+.quiz-answer-btn.neutral {
+    background: var(--card-background);
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+/* Result Feedback */
+.quiz-feedback {
+    margin-top: 2rem;
+}
+
+.quiz-feedback-message {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.quiz-feedback-message.correct {
+    background: var(--quiz-success-bg);
+    color: var(--quiz-success);
+}
+
+.quiz-feedback-message.wrong {
+    background: var(--quiz-error-bg);
+    color: var(--quiz-error);
+}
+
+.quiz-next-btn {
+    width: 100%;
+    padding: 0.875rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: var(--quiz-accent);
+    color: white;
+    transition: opacity 0.2s ease;
+}
+
+.quiz-next-btn:hover {
+    opacity: 0.85;
+}
+
+/* Results Screen */
+.quiz-results {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.quiz-results-card {
+    max-width: 400px;
+    background: var(--background-color);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 2rem;
+    text-align: center;
+}
+
+.quiz-results-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    color: var(--quiz-accent);
+}
+
+.quiz-results-card h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.quiz-results-score {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--quiz-accent);
+    margin-bottom: 0.5rem;
+}
+
+.quiz-results-message {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.quiz-play-again-btn {
+    width: 100%;
+    padding: 0.875rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: var(--quiz-accent);
+    color: white;
+    transition: opacity 0.2s ease;
+}
+
+.quiz-play-again-btn:hover {
+    opacity: 0.85;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .quiz-page {
+        padding: 10px;
+        padding-top: 70px;
+    }
+
+    .quiz-title h1 {
+        font-size: 2rem;
+    }
+
+    .quiz-option-card {
+        padding: 1.5rem;
+    }
+
+    .quiz-question {
+        font-size: 1.5rem;
+    }
+
+    .india-map {
+        max-width: 100%;
+    }
+
+    .quiz-results-score {
+        font-size: 2.5rem;
+    }
+}

@@ -48,9 +48,9 @@
                     <p>A short description of your first project and what technologies you used.</p>
                 </a>
 
-                <a href="#" class="project-card">
-                    <h3>Project Two</h3>
-                    <p>A short description of your second project and what you learned from it.</p>
+                <a href="projects/india-learning/index.html" class="project-card">
+                    <h3>Indian States Quiz</h3>
+                    <p>An interactive quiz game to learn India's states, capitals, and regions.</p>
                 </a>
 
                 <a href="projects/mixtiles-planner/index.html" class="project-card">
@@ -74,7 +74,12 @@
         const toggle = document.getElementById('theme-toggle');
         const body = document.body;
 
-        if (localStorage.getItem('theme') === 'dark') {
+        // Check saved preference, then system preference, then default to light
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDarkMode = savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+
+        if (isDarkMode) {
             body.classList.add('dark-mode');
             toggle.textContent = 'Light';
         }

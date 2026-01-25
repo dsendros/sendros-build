@@ -589,19 +589,17 @@ function addTile(sizeName) {
     tile.x = Math.max(0, Math.min(tile.x, AppState.wall.width - tile.width));
     tile.y = Math.max(0, Math.min(tile.y, AppState.wall.height - tile.height));
 
-    // Check spacing constraint
-    if (AppState.settings.minSpacing > 0) {
-        const spacingCheck = checkSpacingViolation(tile, tile.x, tile.y, null);
-        if (!spacingCheck.valid) {
-            const validPos = findValidPosition(tile, tile.x, tile.y);
-            if (validPos) {
-                tile.x = validPos.x;
-                tile.y = validPos.y;
-            } else {
-                alert('Cannot place tile - no valid position found with current spacing constraint.');
-                AppState.tileIdCounter--;
-                return;
-            }
+    // Check for overlaps and spacing constraint
+    const spacingCheck = checkSpacingViolation(tile, tile.x, tile.y, null);
+    if (!spacingCheck.valid) {
+        const validPos = findValidPosition(tile, tile.x, tile.y);
+        if (validPos) {
+            tile.x = validPos.x;
+            tile.y = validPos.y;
+        } else {
+            alert('Cannot place tile - no valid position found.');
+            AppState.tileIdCounter--;
+            return;
         }
     }
 
@@ -695,19 +693,17 @@ function rotateTile(tileId) {
     newX = snapToGrid(newX);
     newY = snapToGrid(newY);
 
-    // Check spacing constraint
-    if (AppState.settings.minSpacing > 0) {
-        const tempTile = { ...tile, width: newWidth, height: newHeight };
-        const spacingCheck = checkSpacingViolation(tempTile, newX, newY, tile.id);
-        if (!spacingCheck.valid) {
-            const validPos = findValidPosition(tempTile, newX, newY);
-            if (!validPos) {
-                alert('Cannot rotate tile - spacing constraint would be violated.');
-                return;
-            }
-            newX = validPos.x;
-            newY = validPos.y;
+    // Check for overlaps and spacing constraint
+    const tempTile = { ...tile, width: newWidth, height: newHeight };
+    const spacingCheck = checkSpacingViolation(tempTile, newX, newY, tile.id);
+    if (!spacingCheck.valid) {
+        const validPos = findValidPosition(tempTile, newX, newY);
+        if (!validPos) {
+            alert('Cannot rotate tile - would overlap with another tile.');
+            return;
         }
+        newX = validPos.x;
+        newY = validPos.y;
     }
 
     // Apply rotation
@@ -1331,7 +1327,12 @@ function initTheme() {
     const toggle = document.getElementById('theme-toggle');
     const body = document.body;
 
-    if (localStorage.getItem('theme') === 'dark') {
+    // Check saved preference, then system preference, then default to light
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDarkMode = savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+
+    if (isDarkMode) {
         body.classList.add('dark-mode');
         toggle.textContent = 'Light';
     }
