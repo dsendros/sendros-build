@@ -100,10 +100,9 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] System preference detection for dark/light mode
 
 **Remaining:**
-- [ ] **Fix map quiz** — Current SVG map is not geographically accurate. Need to source or create a proper SVG map of India with correct state boundaries and positions. The map should:
-	- Show accurate geographical shapes and positions for all 28 states
-	- Have each state as a separate `<path>` with `data-state` attribute matching state names
-	- Support highlighting (yellow), correct (green), and wrong (red) states
+- [ ] **Match name of state to map** - Alternate version of map quiz that gives user a state name and they need to click on it
+  - When user hovers over a state it should highlight in yellow
+  - When user clicks state, if it's correct it should turn green. It it's incorrect, it should turn red and correct state should turn green
 
 #### Project 3 - Mixtiles Planner
 
