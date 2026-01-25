@@ -307,8 +307,8 @@ function renderGameScreen(container) {
     questionEl.textContent = questionText;
     card.appendChild(questionEl);
 
-    // Map (if map quiz)
-    if (QuizState.gameType === 'map') {
+    // Map (if map or capital quiz)
+    if (QuizState.gameType === 'map' || QuizState.gameType === 'capital') {
         const mapEl = renderMap(
             question.state,
             QuizState.showResult && QuizState.selectedAnswer === question.correctAnswer,

@@ -101,8 +101,23 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] **Find the State mode** - Map Quiz now has two sub-modes accessed via a selection screen:
   - "Name the State" (original): See highlighted state, pick from multiple choice
   - "Find the State" (new): See state name, click on the map to find it
-  - Hover highlighting (yellow) on interactive map
-  - Correct click turns green, wrong click turns red and shows correct state in green
+
+**Remaining Features:**
+- **Change styling of quiz choices**
+	- Eliminate orange border
+	- Use color of project cards on main page to distinguish box from rest of page
+- **Add map to Capital Cities Quiz** - Highlight state being asked about
+- **Add map to Regions Quiz** 
+	- Color different regions differently and label each one
+		- None of the colors should be too close to the green/red states are highlighted if the user chooses correctly/incorrectly
+	- After user chooses a region, highlight state green if they were correct, red if they were wrong
+- **Fix Play Again prompt** - At the end of every game, it asks i
+- **Additional map quiz option** - Add game where user matches every state to its name
+  - User has list of state names and map
+  - User clicks state name then clicks map to match state name to map
+  - If user is wrong, state they click blinks red and wrong guess is logged. They may continue to guess.
+  - If user is correct, state they click highlights green and gets label added.
+  - At end of game, user is told how many times they guessed wrong.
 
 #### Project 3 - Mixtiles Planner
 
