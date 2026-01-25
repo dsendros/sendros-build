@@ -98,11 +98,11 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] Site navigation header with links back to main site
 - [x] Three quiz modes: Map Quiz, Capital Cities Quiz, Regions Quiz
 - [x] System preference detection for dark/light mode
-
-**Remaining:**
-- [ ] **Match name of state to map** - Alternate version of map quiz that gives user a state name and they need to click on it
-  - When user hovers over a state it should highlight in yellow
-  - When user clicks state, if it's correct it should turn green. It it's incorrect, it should turn red and correct state should turn green
+- [x] **Find the State mode** - Map Quiz now has two sub-modes accessed via a selection screen:
+  - "Name the State" (original): See highlighted state, pick from multiple choice
+  - "Find the State" (new): See state name, click on the map to find it
+  - Hover highlighting (yellow) on interactive map
+  - Correct click turns green, wrong click turns red and shows correct state in green
 
 #### Project 3 - Mixtiles Planner
 

@@ -40,8 +40,8 @@ const indianStates = [
 // ===================
 
 const QuizState = {
-    screen: 'menu',        // 'menu' | 'game' | 'results'
-    gameType: null,        // 'map' | 'capital' | 'region'
+    screen: 'menu',        // 'menu' | 'mapSelect' | 'game' | 'results'
+    gameType: null,        // 'map' | 'mapFind' | 'capital' | 'region'
     questions: [],
     currentQuestion: 0,
     score: 0,
@@ -131,6 +131,9 @@ function generateQuestions(type) {
                 .slice(0, 3)
                 .map(s => s.name);
             options = [...wrongAnswers, correctAnswer].sort(() => Math.random() - 0.5);
+        } else if (type === 'mapFind') {
+            // No options needed - user clicks on the map
+            options = [];
         }
 
         return {
@@ -145,6 +148,11 @@ function generateQuestions(type) {
 // ===================
 // GAME LOGIC
 // ===================
+
+function showMapSelect() {
+    QuizState.screen = 'mapSelect';
+    renderScreen();
+}
 
 function startGame(type) {
     QuizState.gameType = type;
@@ -201,6 +209,9 @@ function renderScreen() {
         case 'menu':
             renderMenuScreen(root);
             break;
+        case 'mapSelect':
+            renderMapSelectScreen(root);
+            break;
         case 'game':
             renderGameScreen(root);
             break;
@@ -219,7 +230,7 @@ function renderMenuScreen(container) {
             <p>Test your knowledge of India's 28 states!</p>
         </div>
         <div class="quiz-options">
-            <button class="quiz-option-card" onclick="startGame('map')">
+            <button class="quiz-option-card" onclick="showMapSelect()">
                 ${icons.map}
                 <h2>Map Quiz</h2>
                 <p>Identify states by their location on the map</p>
@@ -239,12 +250,39 @@ function renderMenuScreen(container) {
     container.appendChild(menu);
 }
 
+function renderMapSelectScreen(container) {
+    const selectScreen = document.createElement('div');
+    selectScreen.className = 'quiz-menu';
+    selectScreen.innerHTML = `
+        <div class="quiz-title">
+            <h1>Map Quiz</h1>
+            <p>Choose your challenge</p>
+        </div>
+        <div class="quiz-options">
+            <button class="quiz-option-card" onclick="startGame('map')">
+                ${icons.map}
+                <h2>Name the State</h2>
+                <p>See a highlighted state and choose its name</p>
+            </button>
+            <button class="quiz-option-card" onclick="startGame('mapFind')">
+                ${icons.compass}
+                <h2>Find the State</h2>
+                <p>See a state name and click on it on the map</p>
+            </button>
+        </div>
+        <button class="quiz-back-btn" onclick="restartGame()">← Back to Menu</button>
+    `;
+    container.appendChild(selectScreen);
+}
+
 function renderGameScreen(container) {
     const question = QuizState.questions[QuizState.currentQuestion];
     const questionText = QuizState.gameType === 'capital'
         ? `What is the capital of ${question.state}?`
         : QuizState.gameType === 'region'
         ? `Which region is ${question.state} in?`
+        : QuizState.gameType === 'mapFind'
+        ? `Find: ${question.state}`
         : 'Which state is highlighted on the map?';
 
     const game = document.createElement('div');
@@ -279,31 +317,43 @@ function renderGameScreen(container) {
         card.appendChild(mapEl);
     }
 
-    // Answer options
-    const answersEl = document.createElement('div');
-    answersEl.className = 'quiz-answers';
+    // Interactive Map (if mapFind quiz)
+    if (QuizState.gameType === 'mapFind') {
+        const mapEl = renderInteractiveMap(
+            question.correctAnswer,
+            QuizState.selectedAnswer,
+            QuizState.showResult
+        );
+        card.appendChild(mapEl);
+    }
 
-    question.options.forEach((option, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-answer-btn';
-        btn.textContent = option;
+    // Answer options (not for mapFind - user clicks the map instead)
+    if (QuizState.gameType !== 'mapFind') {
+        const answersEl = document.createElement('div');
+        answersEl.className = 'quiz-answers';
 
-        if (QuizState.showResult) {
-            btn.disabled = true;
-            if (option === question.correctAnswer) {
-                btn.classList.add('correct');
-            } else if (option === QuizState.selectedAnswer) {
-                btn.classList.add('wrong');
+        question.options.forEach((option, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-answer-btn';
+            btn.textContent = option;
+
+            if (QuizState.showResult) {
+                btn.disabled = true;
+                if (option === question.correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (option === QuizState.selectedAnswer) {
+                    btn.classList.add('wrong');
+                } else {
+                    btn.classList.add('neutral');
+                }
             } else {
-                btn.classList.add('neutral');
+                btn.onclick = () => handleAnswer(option);
             }
-        } else {
-            btn.onclick = () => handleAnswer(option);
-        }
 
-        answersEl.appendChild(btn);
-    });
-    card.appendChild(answersEl);
+            answersEl.appendChild(btn);
+        });
+        card.appendChild(answersEl);
+    }
 
     // Feedback (if showing result)
     if (QuizState.showResult) {
@@ -353,6 +403,53 @@ function renderMap(highlightedState, isCorrect, isWrong) {
     }
 
     return mapContainer;
+}
+
+function renderInteractiveMap(correctState, selectedState, showResult) {
+    const mapContainer = document.createElement('div');
+    mapContainer.className = 'quiz-map';
+
+    // Insert the SVG map
+    mapContainer.innerHTML = INDIA_SVG_MAP;
+
+    // Add interactive class to the SVG
+    const svg = mapContainer.querySelector('svg');
+    if (svg) {
+        svg.classList.add('interactive');
+    }
+
+    // Get all state paths
+    const statePaths = mapContainer.querySelectorAll('path[title]');
+
+    statePaths.forEach(path => {
+        const stateName = path.getAttribute('title');
+
+        if (showResult) {
+            // After answer - show feedback
+            if (stateName === correctState) {
+                path.classList.add('correct');
+            } else if (stateName === selectedState && selectedState !== correctState) {
+                path.classList.add('wrong');
+            }
+        } else {
+            // Before answer - make clickable and hoverable
+            path.addEventListener('click', () => handleMapAnswer(stateName));
+            path.addEventListener('mouseenter', () => path.classList.add('hover'));
+            path.addEventListener('mouseleave', () => path.classList.remove('hover'));
+        }
+    });
+
+    return mapContainer;
+}
+
+function handleMapAnswer(clickedState) {
+    const question = QuizState.questions[QuizState.currentQuestion];
+    QuizState.selectedAnswer = clickedState;
+    QuizState.showResult = true;
+    if (clickedState === question.correctAnswer) {
+        QuizState.score++;
+    }
+    renderScreen();
 }
 
 function renderResultsScreen(container) {
