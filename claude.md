@@ -111,7 +111,8 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 	- Color different regions differently and label each one
 		- None of the colors should be too close to the green/red states are highlighted if the user chooses correctly/incorrectly
 	- After user chooses a region, highlight state green if they were correct, red if they were wrong
-- **Fix Play Again prompt** - At the end of every game, it asks i
+- **Fix Play Again prompt** - At the end of every game, it has a "Play Again" button, but clicking it sends you back to menu of options. Instead, it should start another quiz of the type you just played.
+  - Add "Return to Menu" button that sends you back to menu of games.
 - **Additional map quiz option** - Add game where user matches every state to its name
   - User has list of state names and map
   - User clicks state name then clicks map to match state name to map

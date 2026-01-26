@@ -495,7 +495,7 @@ function renderRegionMap(targetState, isCorrect, isWrong) {
         const targetPath = mapContainer.querySelector(`path[title="${targetState}"]`);
         if (targetPath) {
             // Remove region class and add result class
-            targetPath.className = '';
+            targetPath.removeAttribute('class');
             targetPath.classList.add(isCorrect ? 'correct' : 'wrong');
         }
     }
