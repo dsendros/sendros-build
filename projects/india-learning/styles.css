@@ -424,3 +424,219 @@
         font-size: 2.5rem;
     }
 }
+
+/* ===================
+   MATCH ALL STATES MODE
+   =================== */
+
+.match-all-game {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.match-all-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-background);
+    border-radius: 8px;
+}
+
+.match-all-header .progress {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--quiz-accent);
+}
+
+.match-all-header .wrong-count {
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.match-all-content {
+    display: flex;
+    gap: 1.5rem;
+    min-height: 70vh;
+}
+
+/* Left Panel - State List */
+.match-all-list-panel {
+    flex: 0 0 280px;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.state-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.state-list-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--quiz-accent);
+}
+
+.state-list-section.completed .state-list-title {
+    border-bottom-color: var(--quiz-success);
+}
+
+.state-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.state-list-item {
+    padding: 0.625rem 0.875rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.state-list-item:hover:not(.completed) {
+    background: var(--quiz-accent-light);
+    transform: translateX(4px);
+}
+
+.state-list-item.selected {
+    background: var(--quiz-highlight);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.state-list-item.completed {
+    background: var(--quiz-success-bg);
+    color: var(--quiz-success);
+    cursor: default;
+    font-size: 0.85rem;
+}
+
+/* Right Panel - Map */
+.match-all-map-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.match-all-instruction {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--card-background);
+    border-radius: 8px;
+}
+
+.match-all-map {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.match-all-map .india-map {
+    max-width: 100%;
+    max-height: 60vh;
+}
+
+/* Match All Map States */
+.india-map path.matched {
+    fill: var(--quiz-success);
+    stroke: var(--quiz-success);
+    stroke-width: 1;
+}
+
+.india-map path.clickable {
+    cursor: pointer;
+}
+
+.india-map path.non-state {
+    fill: var(--map-state);
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Wrong guess blink animation */
+.india-map path.wrong-blink {
+    animation: wrongBlink 0.2s ease-in-out 3;
+}
+
+@keyframes wrongBlink {
+    0%, 100% {
+        fill: var(--map-state);
+    }
+    50% {
+        fill: var(--quiz-error);
+    }
+}
+
+/* State abbreviation labels */
+.india-map .state-label {
+    font-size: 10px;
+    font-weight: 700;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.india-map .state-label-bg {
+    fill: rgba(0, 0, 0, 0.6);
+}
+
+/* Wrong guess display on results */
+.wrong-guess-result {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+/* Responsive - Match All Mode */
+@media (max-width: 900px) {
+    .match-all-content {
+        flex-direction: column;
+    }
+
+    .match-all-list-panel {
+        flex: none;
+        max-height: 200px;
+        order: 2;
+    }
+
+    .match-all-map-panel {
+        order: 1;
+    }
+
+    .match-all-instruction {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .match-all-list-panel {
+        max-height: 150px;
+        padding: 0.75rem;
+    }
+
+    .state-list-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+}

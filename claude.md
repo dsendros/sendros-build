@@ -105,14 +105,12 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] **Map in Capital Cities Quiz** - Shows map with highlighted state being asked about
 - [x] **Map in Regions Quiz** - Shows map with all states colored by region (6 colors: purple, amber, cyan, teal, blue, dark green) with region labels; highlights target state green/red after answering
 - [x] **Fixed Play Again prompt** - "Play Again" now restarts the same quiz type; added "Return to Menu" button to go back to menu
-
-**Remaining Features:**
-- **Additional map quiz option** - Add game where user matches every state to its name
-  - User has list of state names and map
-  - User clicks state name then clicks map to match state name to map
-  - If user is wrong, state they click blinks red and wrong guess is logged. They may continue to guess.
-  - If user is correct, state they click highlights green and gets label added.
-  - At end of game, user is told how many times they guessed wrong.
+- [x] **Match All States mode** - New game mode under Map Quiz submenu where users match all 28 states from a list to the map
+  - Side-by-side layout: scrollable state list on left, interactive map on right
+  - User clicks state name in list, then finds and clicks it on the map
+  - Wrong guesses: state blinks red, wrong count incremented, user can retry
+  - Correct matches: state highlights green, abbreviation label added (e.g., "KA"), state moves to Completed section
+  - Results show total wrong guesses at the end
 
 #### Project 3 - Mixtiles Planner
 

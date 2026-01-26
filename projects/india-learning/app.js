@@ -5,34 +5,34 @@
 // ===================
 
 const indianStates = [
-    { name: 'Andhra Pradesh', capital: 'Amaravati', region: 'South' },
-    { name: 'Arunachal Pradesh', capital: 'Itanagar', region: 'Northeast' },
-    { name: 'Assam', capital: 'Dispur', region: 'Northeast' },
-    { name: 'Bihar', capital: 'Patna', region: 'East' },
-    { name: 'Chhattisgarh', capital: 'Raipur', region: 'Central' },
-    { name: 'Goa', capital: 'Panaji', region: 'West' },
-    { name: 'Gujarat', capital: 'Gandhinagar', region: 'West' },
-    { name: 'Haryana', capital: 'Chandigarh', region: 'North' },
-    { name: 'Himachal Pradesh', capital: 'Shimla', region: 'North' },
-    { name: 'Jharkhand', capital: 'Ranchi', region: 'East' },
-    { name: 'Karnataka', capital: 'Bengaluru', region: 'South' },
-    { name: 'Kerala', capital: 'Thiruvananthapuram', region: 'South' },
-    { name: 'Madhya Pradesh', capital: 'Bhopal', region: 'Central' },
-    { name: 'Maharashtra', capital: 'Mumbai', region: 'West' },
-    { name: 'Manipur', capital: 'Imphal', region: 'Northeast' },
-    { name: 'Meghalaya', capital: 'Shillong', region: 'Northeast' },
-    { name: 'Mizoram', capital: 'Aizawl', region: 'Northeast' },
-    { name: 'Nagaland', capital: 'Kohima', region: 'Northeast' },
-    { name: 'Odisha', capital: 'Bhubaneswar', region: 'East' },
-    { name: 'Punjab', capital: 'Chandigarh', region: 'North' },
-    { name: 'Rajasthan', capital: 'Jaipur', region: 'North' },
-    { name: 'Sikkim', capital: 'Gangtok', region: 'Northeast' },
-    { name: 'Tamil Nadu', capital: 'Chennai', region: 'South' },
-    { name: 'Telangana', capital: 'Hyderabad', region: 'South' },
-    { name: 'Tripura', capital: 'Agartala', region: 'Northeast' },
-    { name: 'Uttar Pradesh', capital: 'Lucknow', region: 'North' },
-    { name: 'Uttarakhand', capital: 'Dehradun', region: 'North' },
-    { name: 'West Bengal', capital: 'Kolkata', region: 'East' }
+    { name: 'Andhra Pradesh', capital: 'Amaravati', region: 'South', abbr: 'AP' },
+    { name: 'Arunachal Pradesh', capital: 'Itanagar', region: 'Northeast', abbr: 'AR' },
+    { name: 'Assam', capital: 'Dispur', region: 'Northeast', abbr: 'AS' },
+    { name: 'Bihar', capital: 'Patna', region: 'East', abbr: 'BR' },
+    { name: 'Chhattisgarh', capital: 'Raipur', region: 'Central', abbr: 'CG' },
+    { name: 'Goa', capital: 'Panaji', region: 'West', abbr: 'GA' },
+    { name: 'Gujarat', capital: 'Gandhinagar', region: 'West', abbr: 'GJ' },
+    { name: 'Haryana', capital: 'Chandigarh', region: 'North', abbr: 'HR' },
+    { name: 'Himachal Pradesh', capital: 'Shimla', region: 'North', abbr: 'HP' },
+    { name: 'Jharkhand', capital: 'Ranchi', region: 'East', abbr: 'JH' },
+    { name: 'Karnataka', capital: 'Bengaluru', region: 'South', abbr: 'KA' },
+    { name: 'Kerala', capital: 'Thiruvananthapuram', region: 'South', abbr: 'KL' },
+    { name: 'Madhya Pradesh', capital: 'Bhopal', region: 'Central', abbr: 'MP' },
+    { name: 'Maharashtra', capital: 'Mumbai', region: 'West', abbr: 'MH' },
+    { name: 'Manipur', capital: 'Imphal', region: 'Northeast', abbr: 'MN' },
+    { name: 'Meghalaya', capital: 'Shillong', region: 'Northeast', abbr: 'ML' },
+    { name: 'Mizoram', capital: 'Aizawl', region: 'Northeast', abbr: 'MZ' },
+    { name: 'Nagaland', capital: 'Kohima', region: 'Northeast', abbr: 'NL' },
+    { name: 'Odisha', capital: 'Bhubaneswar', region: 'East', abbr: 'OD' },
+    { name: 'Punjab', capital: 'Chandigarh', region: 'North', abbr: 'PB' },
+    { name: 'Rajasthan', capital: 'Jaipur', region: 'North', abbr: 'RJ' },
+    { name: 'Sikkim', capital: 'Gangtok', region: 'Northeast', abbr: 'SK' },
+    { name: 'Tamil Nadu', capital: 'Chennai', region: 'South', abbr: 'TN' },
+    { name: 'Telangana', capital: 'Hyderabad', region: 'South', abbr: 'TG' },
+    { name: 'Tripura', capital: 'Agartala', region: 'Northeast', abbr: 'TR' },
+    { name: 'Uttar Pradesh', capital: 'Lucknow', region: 'North', abbr: 'UP' },
+    { name: 'Uttarakhand', capital: 'Dehradun', region: 'North', abbr: 'UK' },
+    { name: 'West Bengal', capital: 'Kolkata', region: 'East', abbr: 'WB' }
 ];
 
 // Region label positions (approximate centers for each region)
@@ -45,18 +45,57 @@ const regionLabelPositions = {
     'Northeast': { x: 500, y: 250 }
 };
 
+// State label positions (approximate centers for each state)
+const stateLabelPositions = {
+    'Andhra Pradesh': { x: 305, y: 500 },
+    'Arunachal Pradesh': { x: 555, y: 220 },
+    'Assam': { x: 510, y: 265 },
+    'Bihar': { x: 395, y: 285 },
+    'Chhattisgarh': { x: 320, y: 365 },
+    'Goa': { x: 185, y: 485 },
+    'Gujarat': { x: 140, y: 340 },
+    'Haryana': { x: 195, y: 195 },
+    'Himachal Pradesh': { x: 210, y: 155 },
+    'Jharkhand': { x: 385, y: 320 },
+    'Karnataka': { x: 230, y: 500 },
+    'Kerala': { x: 235, y: 580 },
+    'Madhya Pradesh': { x: 260, y: 315 },
+    'Maharashtra': { x: 210, y: 415 },
+    'Manipur': { x: 545, y: 305 },
+    'Meghalaya': { x: 490, y: 280 },
+    'Mizoram': { x: 535, y: 330 },
+    'Nagaland': { x: 545, y: 265 },
+    'Odisha': { x: 360, y: 385 },
+    'Punjab': { x: 180, y: 175 },
+    'Rajasthan': { x: 170, y: 265 },
+    'Sikkim': { x: 445, y: 250 },
+    'Tamil Nadu': { x: 275, y: 560 },
+    'Telangana': { x: 280, y: 445 },
+    'Tripura': { x: 520, y: 315 },
+    'Uttar Pradesh': { x: 290, y: 250 },
+    'Uttarakhand': { x: 240, y: 180 },
+    'West Bengal': { x: 430, y: 320 }
+};
+
 // ===================
 // STATE
 // ===================
 
 const QuizState = {
     screen: 'menu',        // 'menu' | 'mapSelect' | 'game' | 'results'
-    gameType: null,        // 'map' | 'mapFind' | 'capital' | 'region'
+    gameType: null,        // 'map' | 'mapFind' | 'capital' | 'region' | 'matchAll'
     questions: [],
     currentQuestion: 0,
     score: 0,
     selectedAnswer: null,
-    showResult: false
+    showResult: false,
+    // Match All States mode state
+    matchAllState: {
+        selectedStateName: null,  // Currently selected state from list
+        matchedStates: [],        // Array of state names that have been matched
+        wrongGuesses: 0,          // Total wrong guess count
+        isBlinking: false         // State name currently blinking (or false)
+    }
 };
 
 // ===================
@@ -209,7 +248,73 @@ function restartGame() {
 
 function playAgain() {
     const currentType = QuizState.gameType;
-    startGame(currentType);
+    if (currentType === 'matchAll') {
+        startMatchAllGame();
+    } else {
+        startGame(currentType);
+    }
+}
+
+// ===================
+// MATCH ALL STATES MODE
+// ===================
+
+function startMatchAllGame() {
+    QuizState.gameType = 'matchAll';
+    QuizState.screen = 'game';
+    QuizState.matchAllState = {
+        selectedStateName: null,
+        matchedStates: [],
+        wrongGuesses: 0,
+        isBlinking: false
+    };
+    renderScreen();
+}
+
+function selectStateFromList(stateName) {
+    // Only allow selection if state hasn't been matched yet
+    if (QuizState.matchAllState.matchedStates.includes(stateName)) {
+        return;
+    }
+    QuizState.matchAllState.selectedStateName = stateName;
+    renderScreen();
+}
+
+function handleMatchAllMapClick(clickedStateName) {
+    const selectedState = QuizState.matchAllState.selectedStateName;
+
+    // No state selected from list - ignore click
+    if (!selectedState) {
+        return;
+    }
+
+    // Already matched this state - ignore
+    if (QuizState.matchAllState.matchedStates.includes(clickedStateName)) {
+        return;
+    }
+
+    if (clickedStateName === selectedState) {
+        // Correct match!
+        QuizState.matchAllState.matchedStates.push(selectedState);
+        QuizState.matchAllState.selectedStateName = null;
+
+        // Check if game complete
+        if (QuizState.matchAllState.matchedStates.length === indianStates.length) {
+            QuizState.screen = 'results';
+        }
+    } else {
+        // Wrong guess - trigger blink animation
+        QuizState.matchAllState.wrongGuesses++;
+        QuizState.matchAllState.isBlinking = clickedStateName;
+
+        // Clear blink after animation
+        setTimeout(() => {
+            QuizState.matchAllState.isBlinking = false;
+            renderScreen();
+        }, 600);
+    }
+
+    renderScreen();
 }
 
 // ===================
@@ -284,6 +389,11 @@ function renderMapSelectScreen(container) {
                 <h2>Find the State</h2>
                 <p>See a state name and click on it on the map</p>
             </button>
+            <button class="quiz-option-card" onclick="startMatchAllGame()">
+                ${icons.star}
+                <h2>Match All States</h2>
+                <p>Match all 28 states from a list to the map</p>
+            </button>
         </div>
         <button class="quiz-back-btn" onclick="restartGame()">← Back to Menu</button>
     `;
@@ -291,6 +401,12 @@ function renderMapSelectScreen(container) {
 }
 
 function renderGameScreen(container) {
+    // Handle Match All mode separately
+    if (QuizState.gameType === 'matchAll') {
+        renderMatchAllGame(container);
+        return;
+    }
+
     const question = QuizState.questions[QuizState.currentQuestion];
     const questionText = QuizState.gameType === 'capital'
         ? `What is the capital of ${question.state}?`
@@ -532,6 +648,12 @@ function renderRegionMap(targetState, isCorrect, isWrong) {
 }
 
 function renderResultsScreen(container) {
+    // Handle Match All mode differently
+    if (QuizState.gameType === 'matchAll') {
+        renderMatchAllResults(container);
+        return;
+    }
+
     const percentage = (QuizState.score / QuizState.questions.length) * 100;
     let message;
     if (percentage >= 80) {
@@ -555,6 +677,222 @@ function renderResultsScreen(container) {
         </div>
     `;
     container.appendChild(results);
+}
+
+function renderMatchAllResults(container) {
+    const wrongGuesses = QuizState.matchAllState.wrongGuesses;
+    let message;
+
+    if (wrongGuesses === 0) {
+        message = 'Perfect! You matched every state without a single mistake!';
+    } else if (wrongGuesses <= 5) {
+        message = 'Excellent work! You really know your Indian geography!';
+    } else if (wrongGuesses <= 15) {
+        message = 'Good job! Keep practicing to improve!';
+    } else {
+        message = 'Nice effort! Study the map and try again!';
+    }
+
+    const results = document.createElement('div');
+    results.className = 'quiz-results';
+    results.innerHTML = `
+        <div class="quiz-results-card">
+            ${icons.award}
+            <h2>All States Matched!</h2>
+            <div class="quiz-results-score">${indianStates.length}/${indianStates.length}</div>
+            <div class="wrong-guess-result">Wrong guesses: ${wrongGuesses}</div>
+            <p class="quiz-results-message">${message}</p>
+            <button class="quiz-play-again-btn" onclick="playAgain()">Play Again</button>
+            <button class="quiz-menu-btn" onclick="restartGame()">Return to Menu</button>
+        </div>
+    `;
+    container.appendChild(results);
+}
+
+function renderMatchAllGame(container) {
+    const { selectedStateName, matchedStates, wrongGuesses } = QuizState.matchAllState;
+
+    const game = document.createElement('div');
+    game.className = 'match-all-game';
+
+    // Header with progress and wrong guesses
+    const header = document.createElement('div');
+    header.className = 'match-all-header';
+    header.innerHTML = `
+        <span class="progress">${matchedStates.length} of ${indianStates.length} matched</span>
+        <span class="wrong-count">Wrong guesses: ${wrongGuesses}</span>
+    `;
+    game.appendChild(header);
+
+    // Main content - side by side layout
+    const content = document.createElement('div');
+    content.className = 'match-all-content';
+
+    // Left panel - state list
+    const leftPanel = document.createElement('div');
+    leftPanel.className = 'match-all-list-panel';
+    leftPanel.appendChild(renderStateList(matchedStates, selectedStateName));
+    content.appendChild(leftPanel);
+
+    // Right panel - map
+    const rightPanel = document.createElement('div');
+    rightPanel.className = 'match-all-map-panel';
+
+    // Instruction above map
+    const instruction = document.createElement('div');
+    instruction.className = 'match-all-instruction';
+    instruction.textContent = selectedStateName
+        ? `Find: ${selectedStateName}`
+        : 'Select a state from the list';
+    rightPanel.appendChild(instruction);
+
+    rightPanel.appendChild(renderMatchAllMap(matchedStates, selectedStateName));
+    content.appendChild(rightPanel);
+
+    game.appendChild(content);
+    container.appendChild(game);
+}
+
+function renderStateList(matchedStates, selectedStateName) {
+    const unmatchedStates = indianStates.filter(s => !matchedStates.includes(s.name));
+
+    const listContainer = document.createElement('div');
+    listContainer.className = 'state-list-container';
+
+    // Unmatched states section
+    const unmatchedSection = document.createElement('div');
+    unmatchedSection.className = 'state-list-section';
+
+    const unmatchedTitle = document.createElement('h3');
+    unmatchedTitle.className = 'state-list-title';
+    unmatchedTitle.textContent = 'States to Match';
+    unmatchedSection.appendChild(unmatchedTitle);
+
+    const unmatchedList = document.createElement('div');
+    unmatchedList.className = 'state-list';
+
+    // Sort alphabetically for easier finding
+    const sortedUnmatched = [...unmatchedStates].sort((a, b) =>
+        a.name.localeCompare(b.name)
+    );
+
+    sortedUnmatched.forEach(state => {
+        const stateBtn = document.createElement('button');
+        stateBtn.className = 'state-list-item';
+        if (state.name === selectedStateName) {
+            stateBtn.classList.add('selected');
+        }
+        stateBtn.textContent = state.name;
+        stateBtn.onclick = () => selectStateFromList(state.name);
+        unmatchedList.appendChild(stateBtn);
+    });
+
+    unmatchedSection.appendChild(unmatchedList);
+    listContainer.appendChild(unmatchedSection);
+
+    // Completed states section (only show if there are matched states)
+    if (matchedStates.length > 0) {
+        const completedSection = document.createElement('div');
+        completedSection.className = 'state-list-section completed';
+
+        const completedTitle = document.createElement('h3');
+        completedTitle.className = 'state-list-title';
+        completedTitle.textContent = `Completed (${matchedStates.length})`;
+        completedSection.appendChild(completedTitle);
+
+        const completedList = document.createElement('div');
+        completedList.className = 'state-list completed-list';
+
+        const sortedMatched = [...matchedStates].sort();
+        sortedMatched.forEach(stateName => {
+            const stateItem = document.createElement('div');
+            stateItem.className = 'state-list-item completed';
+            const stateData = indianStates.find(s => s.name === stateName);
+            stateItem.textContent = `${stateName} (${stateData.abbr})`;
+            completedList.appendChild(stateItem);
+        });
+
+        completedSection.appendChild(completedList);
+        listContainer.appendChild(completedSection);
+    }
+
+    return listContainer;
+}
+
+function renderMatchAllMap(matchedStates, selectedStateName) {
+    const mapContainer = document.createElement('div');
+    mapContainer.className = 'quiz-map match-all-map';
+
+    // Insert the SVG map
+    mapContainer.innerHTML = INDIA_SVG_MAP;
+
+    const svg = mapContainer.querySelector('svg');
+    if (svg) {
+        svg.classList.add('interactive');
+    }
+
+    // Get all state paths
+    const statePaths = mapContainer.querySelectorAll('path[title]');
+
+    statePaths.forEach(path => {
+        const stateName = path.getAttribute('title');
+
+        // Check if this state is in our 28 states list
+        const stateData = indianStates.find(s => s.name === stateName);
+        if (!stateData) {
+            // Union territories or other regions - make non-interactive
+            path.classList.add('non-state');
+            return;
+        }
+
+        if (matchedStates.includes(stateName)) {
+            // Already matched - show as correct with label
+            path.classList.add('matched');
+            addStateLabel(svg, stateName, stateData.abbr);
+        } else if (QuizState.matchAllState.isBlinking === stateName) {
+            // Wrong guess - blinking red
+            path.classList.add('wrong-blink');
+        } else {
+            // Available for clicking
+            path.addEventListener('click', () => handleMatchAllMapClick(stateName));
+            path.addEventListener('mouseenter', () => {
+                if (selectedStateName) {
+                    path.classList.add('hover');
+                }
+            });
+            path.addEventListener('mouseleave', () => path.classList.remove('hover'));
+
+            // Visual cue that map is interactive when a state is selected
+            if (selectedStateName) {
+                path.classList.add('clickable');
+            }
+        }
+    });
+
+    return mapContainer;
+}
+
+function addStateLabel(svg, stateName, abbr) {
+    const pos = stateLabelPositions[stateName];
+    if (!pos) return;
+
+    // Create background rect for label
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('x', pos.x - 12);
+    bg.setAttribute('y', pos.y - 10);
+    bg.setAttribute('width', 24);
+    bg.setAttribute('height', 14);
+    bg.setAttribute('rx', 2);
+    bg.setAttribute('class', 'state-label-bg');
+    svg.appendChild(bg);
+
+    // Create text label
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', pos.x);
+    text.setAttribute('y', pos.y + 2);
+    text.setAttribute('class', 'state-label');
+    text.textContent = abbr;
+    svg.appendChild(text);
 }
 
 // ===================
