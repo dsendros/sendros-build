@@ -35,6 +35,16 @@ const indianStates = [
     { name: 'West Bengal', capital: 'Kolkata', region: 'East' }
 ];
 
+// Region label positions (approximate centers for each region)
+const regionLabelPositions = {
+    'North': { x: 195, y: 175 },
+    'South': { x: 320, y: 545 },
+    'East': { x: 420, y: 340 },
+    'West': { x: 115, y: 380 },
+    'Central': { x: 280, y: 320 },
+    'Northeast': { x: 500, y: 250 }
+};
+
 // ===================
 // STATE
 // ===================
@@ -327,6 +337,16 @@ function renderGameScreen(container) {
         card.appendChild(mapEl);
     }
 
+    // Region Map (if region quiz)
+    if (QuizState.gameType === 'region') {
+        const mapEl = renderRegionMap(
+            question.state,
+            QuizState.showResult && QuizState.selectedAnswer === question.correctAnswer,
+            QuizState.showResult && QuizState.selectedAnswer !== question.correctAnswer
+        );
+        card.appendChild(mapEl);
+    }
+
     // Answer options (not for mapFind - user clicks the map instead)
     if (QuizState.gameType !== 'mapFind') {
         const answersEl = document.createElement('div');
@@ -450,6 +470,60 @@ function handleMapAnswer(clickedState) {
         QuizState.score++;
     }
     renderScreen();
+}
+
+function renderRegionMap(targetState, isCorrect, isWrong) {
+    const mapContainer = document.createElement('div');
+    mapContainer.className = 'quiz-map';
+
+    // Insert the SVG map
+    mapContainer.innerHTML = INDIA_SVG_MAP;
+
+    const svg = mapContainer.querySelector('svg');
+
+    // Color all states by their region
+    indianStates.forEach(state => {
+        const statePath = mapContainer.querySelector(`path[title="${state.name}"]`);
+        if (statePath) {
+            const regionClass = `region-${state.region.toLowerCase()}`;
+            statePath.classList.add(regionClass);
+        }
+    });
+
+    // If showing result, highlight the target state with correct/wrong color
+    if (isCorrect || isWrong) {
+        const targetPath = mapContainer.querySelector(`path[title="${targetState}"]`);
+        if (targetPath) {
+            // Remove region class and add result class
+            targetPath.className = '';
+            targetPath.classList.add(isCorrect ? 'correct' : 'wrong');
+        }
+    }
+
+    // Add region labels
+    if (svg) {
+        Object.entries(regionLabelPositions).forEach(([region, pos]) => {
+            // Create background rect for better readability
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('x', pos.x - 35);
+            bg.setAttribute('y', pos.y - 10);
+            bg.setAttribute('width', 70);
+            bg.setAttribute('height', 16);
+            bg.setAttribute('rx', 3);
+            bg.setAttribute('class', 'region-label-bg');
+            svg.appendChild(bg);
+
+            // Create text label
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', pos.x);
+            text.setAttribute('y', pos.y);
+            text.setAttribute('class', 'region-label');
+            text.textContent = region;
+            svg.appendChild(text);
+        });
+    }
+
+    return mapContainer;
 }
 
 function renderResultsScreen(container) {

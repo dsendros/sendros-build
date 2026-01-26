@@ -12,6 +12,13 @@
     --quiz-highlight: #fbbf24;
     --map-bg: #eff6ff;
     --map-state: #e5e7eb;
+    /* Region colors (avoiding green/red) */
+    --region-north: #8b5cf6;
+    --region-south: #f59e0b;
+    --region-east: #06b6d4;
+    --region-west: #ec4899;
+    --region-central: #3b82f6;
+    --region-northeast: #84cc16;
 }
 
 .dark-mode {
@@ -194,6 +201,27 @@
     fill: var(--quiz-error);
     stroke: var(--quiz-error);
     stroke-width: 1.5;
+}
+
+/* Region Map Colors */
+.india-map path.region-north { fill: var(--region-north); }
+.india-map path.region-south { fill: var(--region-south); }
+.india-map path.region-east { fill: var(--region-east); }
+.india-map path.region-west { fill: var(--region-west); }
+.india-map path.region-central { fill: var(--region-central); }
+.india-map path.region-northeast { fill: var(--region-northeast); }
+
+/* Region Labels */
+.india-map .region-label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+}
+
+.india-map .region-label-bg {
+    fill: rgba(0, 0, 0, 0.4);
 }
 
 /* Interactive Map (Find the State mode) */
