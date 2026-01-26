@@ -207,6 +207,11 @@ function restartGame() {
     renderScreen();
 }
 
+function playAgain() {
+    const currentType = QuizState.gameType;
+    startGame(currentType);
+}
+
 // ===================
 // RENDER FUNCTIONS
 // ===================
@@ -545,7 +550,8 @@ function renderResultsScreen(container) {
             <h2>Quiz Complete!</h2>
             <div class="quiz-results-score">${QuizState.score}/${QuizState.questions.length}</div>
             <p class="quiz-results-message">${message}</p>
-            <button class="quiz-play-again-btn" onclick="restartGame()">Play Again</button>
+            <button class="quiz-play-again-btn" onclick="playAgain()">Play Again</button>
+            <button class="quiz-menu-btn" onclick="restartGame()">Return to Menu</button>
         </div>
     `;
     container.appendChild(results);

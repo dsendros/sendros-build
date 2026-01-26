@@ -378,6 +378,25 @@
     opacity: 0.85;
 }
 
+.quiz-menu-btn {
+    width: 100%;
+    padding: 0.875rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.75rem;
+    background: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.quiz-menu-btn:hover {
+    background: var(--text-color);
+    color: var(--background-color);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .quiz-page {

@@ -101,18 +101,12 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 - [x] **Find the State mode** - Map Quiz now has two sub-modes accessed via a selection screen:
   - "Name the State" (original): See highlighted state, pick from multiple choice
   - "Find the State" (new): See state name, click on the map to find it
+- [x] **Restyled quiz choices** - Removed orange border, now uses card background color matching project cards on main page
+- [x] **Map in Capital Cities Quiz** - Shows map with highlighted state being asked about
+- [x] **Map in Regions Quiz** - Shows map with all states colored by region (6 colors: purple, amber, cyan, teal, blue, dark green) with region labels; highlights target state green/red after answering
+- [x] **Fixed Play Again prompt** - "Play Again" now restarts the same quiz type; added "Return to Menu" button to go back to menu
 
 **Remaining Features:**
-- **Change styling of quiz choices**
-	- Eliminate orange border
-	- Use color of project cards on main page to distinguish box from rest of page
-- **Add map to Capital Cities Quiz** - Highlight state being asked about
-- **Add map to Regions Quiz** 
-	- Color different regions differently and label each one
-		- None of the colors should be too close to the green/red states are highlighted if the user chooses correctly/incorrectly
-	- After user chooses a region, highlight state green if they were correct, red if they were wrong
-- **Fix Play Again prompt** - At the end of every game, it has a "Play Again" button, but clicking it sends you back to menu of options. Instead, it should start another quiz of the type you just played.
-  - Add "Return to Menu" button that sends you back to menu of games.
 - **Additional map quiz option** - Add game where user matches every state to its name
   - User has list of state names and map
   - User clicks state name then clicks map to match state name to map
