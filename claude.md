@@ -10,15 +10,24 @@ sendros-build-website/
 ├── styles.css                      # All styling and theming
 ├── claude.md                       # This documentation
 └── projects/
+    ├── cocktological-evenings/
+    │   ├── index.html              # CE project detail page
+    │   ├── styles.css              # Page-specific styles
+    │   └── CE-logo.jpg             # Cocktological Evenings logo
     ├── india-learning/
     │   ├── index.html              # India quiz app
     │   ├── styles.css              # App-specific styles
     │   └── app.js                  # Application JavaScript (vanilla JS)
-    └── mixtiles-planner/
-        ├── index.html              # Mixtiles planner app
+    ├── mixtiles-planner/
+    │   ├── index.html              # Mixtiles planner app
+    │   ├── styles.css              # App-specific styles
+    │   ├── app.js                  # Application JavaScript
+    │   └── README.md               # Mixtiles planner documentation
+    └── zoning-dashboard/
+        ├── index.html              # Zoning dashboard app
         ├── styles.css              # App-specific styles
         ├── app.js                  # Application JavaScript
-        └── README.md               # Mixtiles planner documentation
+        └── data-fields.csv         # Field documentation for DC zoning data sources
 ```
 
 ## Features
@@ -84,33 +93,39 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 
 ### Projects
 
-#### Project 1 - Cocktological Evenings
-- Link to CE site
-- Disable site functionality
-- Transition site off squarespace
+#### Project 1 - Cocktological Evenings (Completed)
+
+A detail page for Dennis's now-defunct themed cocktail evening project (2015-2019).
+
+**Page Structure:**
+- Header with CE logo (circular) and title
+- First-person description of the project's origin and evolution
+- Two link cards with logos:
+  - Visit Website (CE logo) → cocktologicalevenings.com
+  - YouTube Channel (red YouTube logo) → @cocktologicalevenings9308
+
+**Implementation:**
+- `projects/cocktological-evenings/index.html` — Detail page with explainer text and link cards
+- `projects/cocktological-evenings/styles.css` — Flexbox layout for header and cards, dark/light mode support
+- Project card on main portfolio links to detail page
 
 #### Project 2 - India Quizzes
 
-**Completed:**
-- [x] Split into separate HTML, CSS, and JS files
-- [x] Converted from React to vanilla JavaScript (consistent with mixtiles-planner)
-- [x] Match style to rest of site (uses site CSS variables, dark/light mode support)
-- [x] Site navigation header with links back to main site
-- [x] Three quiz modes: Map Quiz, Capital Cities Quiz, Regions Quiz
-- [x] System preference detection for dark/light mode
-- [x] **Find the State mode** - Map Quiz now has two sub-modes accessed via a selection screen:
-  - "Name the State" (original): See highlighted state, pick from multiple choice
-  - "Find the State" (new): See state name, click on the map to find it
-- [x] **Restyled quiz choices** - Removed orange border, now uses card background color matching project cards on main page
-- [x] **Map in Capital Cities Quiz** - Shows map with highlighted state being asked about
-- [x] **Map in Regions Quiz** - Shows map with all states colored by region (6 colors: purple, amber, cyan, teal, blue, dark green) with region labels; highlights target state green/red after answering
-- [x] **Fixed Play Again prompt** - "Play Again" now restarts the same quiz type; added "Return to Menu" button to go back to menu
-- [x] **Match All States mode** - New game mode under Map Quiz submenu where users match all 28 states from a list to the map
-  - Side-by-side layout: scrollable state list on left, interactive map on right
-  - User clicks state name in list, then finds and clicks it on the map
-  - Wrong guesses: state blinks red, wrong count incremented, user can retry
-  - Correct matches: state highlights green, abbreviation label added (e.g., "KA"), state moves to Completed section
-  - Results show total wrong guesses at the end
+**Quiz Modes:**
+1. **Map Quiz** (3 sub-modes):
+   - *Name the State*: See highlighted state, pick from multiple choice
+   - *Find the State*: See state name, click on the map to find it
+   - *Match All States*: Match all 28 states from a list to the map
+2. **Capital Cities Quiz**: Match states with capitals, shows map with highlighted state
+3. **Regions Quiz**: Identify which region each state belongs to, color-coded map
+
+**Implementation Details:**
+- Vanilla JavaScript (no frameworks)
+- SVG map with state paths using `title` attributes for identification
+- State data includes: `name`, `capital`, `region`, `abbr` (2-letter abbreviation)
+- `stateLabelPositions` object stores x,y coordinates for label placement
+- CSS variables for theming, dark/light mode support
+- Responsive design with mobile breakpoints
 
 #### Project 3 - Mixtiles Planner
 
@@ -132,3 +147,38 @@ This creates the effect of the hexagon "drawing itself" starting from both the t
 
 #### Project 4 - Columbia Heights Station Alerts
 - Raspberry Pi setup with train times and maybe other station alerts for Columbia Heights
+
+#### Project 5 - DC Zoning Dashboard
+
+A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify cases they may want to act on.
+
+**Data Sources:**
+- DC GIS ArcGIS REST API Layer 34 (Zoning Cases) - ZC and BZA cases
+- DC GIS ArcGIS REST API Layer 45 (Design Review Cases)
+- DCOZ Calendar (Phase 3 - future)
+
+**Completed Features (Phase 2):**
+- [x] **Table and Card views** — Toggle between table (sortable, zebra-striped) and card grid views
+- [x] **Case type filtering** — Filter by ZC, BZA, or Design Review
+- [x] **Date range filtering** — Default to last 180 days, adjustable
+- [x] **Unified search** — Search case numbers, addresses, descriptions, ANC
+- [x] **Case detail modal** — Click row/card to see full case details
+- [x] **IZIS links** — Click case number to open official IZIS page (URL built from case number)
+- [x] **Address links** — Addresses in detail modal link to Google Maps
+- [x] **SSL links** — SSL in detail modal links to DC zoning map
+- [x] **Dark/light mode** — Consistent with other projects
+- [x] **Responsive design** — Works on mobile and desktop
+
+**Implementation:**
+- `projects/zoning-dashboard/index.html` — Dashboard page
+- `projects/zoning-dashboard/styles.css` — Styling with dark/light mode
+- `projects/zoning-dashboard/app.js` — API queries, state management, rendering
+- `projects/zoning-dashboard/data-fields.csv` — Field documentation
+
+**Remaining Features (Phase 3):**
+- [ ] **Calendar integration** — Scrape DCOZ Calendar for hearing dates
+- [ ] **Upcoming hearings view** — Show cases with scheduled hearings
+- [ ] **Cases without action** — Highlight cases pending action
+
+**Notes:**
+- Design Review (Layer 45) has no recent cases — most recent is case 15-23 filed 9/9/2015

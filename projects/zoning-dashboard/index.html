@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Zoning Dashboard | Sendros.Build</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">DS</a>
+            <ul>
+                <li><a href="../../#about">About</a></li>
+                <li><a href="../../#projects">Projects</a></li>
+                <li><a href="../../#contact">Contact</a></li>
+                <li><button id="theme-toggle" aria-label="Toggle dark mode">Dark</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-page">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>DC Zoning Dashboard</h1>
+                <p>Track ZC, BZA, and Design Review cases</p>
+            </div>
+            <div class="dashboard-controls">
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="table">Table</button>
+                    <button class="view-btn" data-view="cards">Cards</button>
+                </div>
+                <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
+            </div>
+        </div>
+
+        <!-- Filters Panel -->
+        <div class="filters-panel" id="filters-panel">
+            <div class="filters-header">
+                <h2>Filters</h2>
+                <button class="filters-toggle" id="filters-toggle" aria-label="Toggle filters">
+                    <span class="toggle-icon">&#9660;</span>
+                </button>
+            </div>
+            <div class="filters-body" id="filters-body">
+                <div class="filters-grid">
+                    <!-- Date Range -->
+                    <div class="filter-group">
+                        <label>Date Range</label>
+                        <div class="date-range">
+                            <input type="date" id="date-from">
+                            <span>to</span>
+                            <input type="date" id="date-to">
+                        </div>
+                    </div>
+
+                    <!-- Case Type -->
+                    <div class="filter-group">
+                        <label>Case Type</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="case-type-filter" value="ZC" checked>
+                                <span class="case-type-badge zc">ZC</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="case-type-filter" value="BZA" checked>
+                                <span class="case-type-badge bza">BZA</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="case-type-filter" value="DR" checked>
+                                <span class="case-type-badge dr">DR</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="filter-group filter-group-wide">
+                        <label for="search-input">Search</label>
+                        <input type="text" id="search-input" placeholder="Search case number, address, description, ANC...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary" id="results-summary">
+            <span class="results-count">Loading cases...</span>
+            <div class="active-filters" id="active-filters"></div>
+        </div>
+
+        <!-- Table View -->
+        <div class="table-container" id="table-view">
+            <table class="cases-table">
+                <thead>
+                    <tr>
+                        <th data-sort="caseNumber" class="sortable">Case #</th>
+                        <th data-sort="caseType" class="sortable">Type</th>
+                        <th data-sort="address" class="sortable">Address / Relief</th>
+                        <th data-sort="anc" class="sortable">ANC</th>
+                        <th data-sort="dateFiled" class="sortable sort-active sort-desc">Date Filed</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- Card View -->
+        <div class="card-view hidden" id="card-view">
+            <div class="cards-grid" id="cards-grid"></div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state hidden" id="loading-state">
+            <div class="spinner"></div>
+            <p>Loading cases...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="error-state hidden" id="error-state">
+            <p class="error-message" id="error-message"></p>
+            <button class="btn btn-primary" onclick="loadAllCases()">Retry</button>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+            <p>No cases found matching your filters.</p>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal hidden" id="detail-modal">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        const toggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Check saved preference, then system preference, then default to light
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDarkMode = savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            toggle.textContent = 'Light';
+        }
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            toggle.textContent = isDark ? 'Light' : 'Dark';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+.ce-page {
+    padding: 2rem;
+    padding-top: 100px;
+    min-height: 100vh;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ce-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ce-logo {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.ce-content h1 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.ce-description {
+    margin-bottom: 3rem;
+}
+
+.ce-description p {
+    color: var(--text-color);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+
+.ce-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.ce-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ce-card-logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ce-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.ce-card h3 {
+    color: var(--primary-color);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.ce-card:hover h3 {
+    color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+    .ce-page {
+        padding: 1.5rem;
+        padding-top: 80px;
+    }
+
+    .ce-content h1 {
+        font-size: 1.75rem;
+    }
+}

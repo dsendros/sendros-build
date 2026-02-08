@@ -1,0 +1,62 @@
+Include?,Field Name,Data Type,Description,Sample Value 1,Sample Value 2,Sample Value 3,Source
+N,CASE_NAME,String (255),Applicant or organization name filing the case,Office of Planning,"Drivers, Chauffeurs & Helpers Local Union No. 639",Geraldine Dalzell-Payne,DC GIS Layer 34
+Y,CASE_NUMBER,String (255),Case identifier combining body type and number,13-01 0848,16013 0003,17292 0057,DC GIS Layer 34
+N,CASE_ID,String (255),Unique internal case identifier,,,DC GIS Layer 34,
+N,CASEPOINT_NUMBER,String (255),Reference number for case geographic point,,,DC GIS Layer 34,
+N,CASEPOINT_URL,String (255),URL to case point information,,,DC GIS Layer 34,
+Y,CASE_TYPE,String (255),Body handling the case (ZC or BZA),ZC,BZA,,DC GIS Layer 34
+Y,CASE_TYPE_RELIEF,String (255),Type of relief or action requested,Text Amendment,Special Exception,Variance,DC GIS Layer 34
+N,OWNERNAME,String (255),Property owner name (may differ from applicant),,,DC GIS Layer 34,
+Y,PREMISE_ADDRESS,String (255),Street address of the subject property,0926 MASSACHUSETTS AV NW,3100 AMES PL NE,3707 S ST NW,DC GIS Layer 34
+N,DATEFILED,Date,Date the case was filed with the zoning office,2013-01-07,1995-01-01,2005-01-25,DC GIS Layer 34
+Y,DESCRIPTION,String (2000),Detailed description of the case and relief sought,,,DC GIS Layer 34,
+N,RELATEDCASES,String (500),Other case numbers related to this case,,,DC GIS Layer 34,
+Y,EXISTINGZONING,String (255),Current zoning classification of the property,R-3,MU-4,C-2-A,DC GIS Layer 34
+Y,REQUESTEDZONING,String (255),Proposed new zoning classification,MU-4,R-4,C-3-C,DC GIS Layer 34
+N,APPROVEDZONING,String (255),Final approved zoning (if case approved),,,DC GIS Layer 34,
+N,RELIEFSOUGHT,String (255),Specific relief being requested,,,DC GIS Layer 34,
+N,ACTION_TAKEN,String (255),Decision on the case,Approved,Withdrawn,Denied,DC GIS Layer 34
+N,BZAPURSUANTTO,String (600),BZA regulation sections case is filed under,,,DC GIS Layer 34,
+N,BZARELIEFOF,String (600),Specific BZA relief provisions requested,,,DC GIS Layer 34,
+Y,SSL,String (255),"Square, Suffix, and Lot combined identifier",0370/0848,4364/0003,1308/0057,DC GIS Layer 34
+N,SQUARE,String (255),DC property square number,370,4364,1308,DC GIS Layer 34
+N,SUFFIX,String (255),Square suffix if applicable,,,DC GIS Layer 34,
+N,LOTNUM,String (255),Lot number within the square,848,3,57,DC GIS Layer 34
+N,PARCEL,String (255),Parcel identifier,,,DC GIS Layer 34,
+Y,URL,String (255),Link to IZIS case report page,,,DC GIS Layer 34,
+N,IMAGE_URL,String (255),Link to case-related images,,,DC GIS Layer 34,
+Y,ANCSMD,String (255),Advisory Neighborhood Commission and Single Member District,2C01,5C04,20,DC GIS Layer 34
+N,GIS_ID,String (50),Internal GIS identifier,,,DC GIS Layer 34,
+N,OBJECTID,Integer,Unique database record identifier (auto-generated),1,2,3,DC GIS Layer 34
+N,SHAPE,Geometry,Geographic point location (lat/long coordinates),,,DC GIS Layer 34,
+,--- Map Amendments Layer (44) ---,,,,,,
+N,ZONE,String (50),Zone classification being applied for in amendment,MU-4,C-2-A,R-4,DC GIS Layer 44
+N,CASENUMBER,String (50),Case number of the map amendment application,23-01,22-15,21-08,DC GIS Layer 44
+N,NARRATIVE,String (50),Brief narrative description of the map amendment,,,DC GIS Layer 44,
+N,STATUS,String (50),Current case status,Approved,Pending,Withdrawn,DC GIS Layer 44
+N,DATE_,Date,Order effective date (when amendment takes effect),,,DC GIS Layer 44,
+N,URL,String (100),URL for IZIS case report page,,,DC GIS Layer 44,
+N,IZ_DESIGNATION,String (255),Inclusionary Zoning designation if applicable,IZ,,DC GIS Layer 44,
+,--- Design Review Cases Layer (45) ---,,,,,,
+Y,DR_CASENUMBER,String (25),Design review case number,23-DR-01,22-DR-15,,DC GIS Layer 45
+Y,DR_CASEYPE,String (50),Type of design review case,Design Review,Campus Plan,,DC GIS Layer 45
+N,DR_APPLICANT,String (75),Name of the case applicant,Georgetown University,American University,,DC GIS Layer 45
+Y,DR_NARRATIVE,String (150),Narrative description of the design review case,,,DC GIS Layer 45,
+N,DR_DATEFILED,String (25),Date of case filing,2023-05-15,2022-11-01,,DC GIS Layer 45
+N,DR_DATEACTION,String (25),Date of case action or decision,2024-01-20,2023-06-15,,DC GIS Layer 45
+N,DR_DCREGDATE,String (25),Date order is published in DC Register (effective date),2024-02-01,2023-07-01,,DC GIS Layer 45
+Y,DR_STATUS,String (50),Case status,Approved,Pending,Withdrawn,DC GIS Layer 45
+Y,DR_URL,String (255),URL for IZIS case report page,,,DC GIS Layer 45,
+N,DR_IMAGE_URL,String (255),URL for case report image,,,DC GIS Layer 45,
+,--- DCOZ Calendar (HTML Scraping) ---,,,,,,
+Y,Case Number,String,BZA (5-digit) or ZC (XX-XX) case identifier,21149,24-06,16-18H,DCOZ Calendar
+N,Case Name/Applicant,String,Party name or description,"28th Street Holdings, LLC",Georgetown University,Howard University,DCOZ Calendar
+Y,Hearing Date,Date,Scheduled hearing date,2025-01-22,2025-01-13,2025-01-16,DCOZ Calendar
+Y,Hearing Time,Time,Scheduled hearing time,9:30 AM,4:00 PM,4:00 PM,DCOZ Calendar
+Y,Hearing Type,String,Type of proceeding,Public Hearing,Public Meeting,Closed Meeting,DCOZ Calendar
+Y,Body Type,String,ZC (Zoning Commission) or BZA (Board of Zoning Adjustment),BZA,ZC,ZC,DCOZ Calendar
+N,Location,String,Hearing venue (usually virtual),Virtual Hearing/Meeting,Virtual Hearing/Meeting,,DCOZ Calendar
+Y,Result,String,Outcome of the hearing,Approved,Postponed,Withdrawn,DCOZ Calendar
+Y,Vote,String,Vote tally (for-against-abstain),5-0-0,4-1-0,3-0-2,DCOZ Calendar
+Y,Next Action,String,Follow-up deadlines or actions,Draft order due January 27,Final Action February 27,,DCOZ Calendar
+Y,Agenda Link,URL,Download link for hearing agenda,/Content/Schedule/SearchResults.aspx?Func=Download&aptKey=...,,,DCOZ Calendar
