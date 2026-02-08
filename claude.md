@@ -153,13 +153,15 @@ A detail page for Dennis's now-defunct themed cocktail evening project (2015-201
 A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify cases they may want to act on.
 
 **Data Sources:**
-- DC GIS ArcGIS REST API Layer 34 (Zoning Cases) - ZC and BZA cases
-- DC GIS ArcGIS REST API Layer 45 (Design Review Cases)
-- DCOZ Calendar (Phase 3 - future)
+- DCOZ Zone_Mapservice ArcGIS REST API Layer 46 (Zoning Cases Filed 2020-Present) - ZC and BZA cases
+- DCOZ Zone_Mapservice ArcGIS REST API Layer 44 (Design Review) - treated as ZC cases
+- DCOZ Calendar
+- API base: `https://maps2.dcgis.dc.gov/dcgis/rest/services/DCOZ/Zone_Mapservice/MapServer`
+- Results are paginated (1000 records per page) and deduplicated by Case_ID
 
 **Completed Features (Phase 2):**
 - [x] **Table and Card views** — Toggle between table (sortable, zebra-striped) and card grid views
-- [x] **Case type filtering** — Filter by ZC, BZA, or Design Review
+- [x] **Case type filtering** — Filter by ZC or BZA
 - [x] **Date range filtering** — Default to last 180 days, adjustable
 - [x] **Unified search** — Search case numbers, addresses, descriptions, ANC
 - [x] **Case detail modal** — Click row/card to see full case details
@@ -175,10 +177,15 @@ A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify ca
 - `projects/zoning-dashboard/app.js` — API queries, state management, rendering
 - `projects/zoning-dashboard/data-fields.csv` — Field documentation
 
-**Remaining Features (Phase 3):**
-- [ ] **Calendar integration** — Scrape DCOZ Calendar for hearing dates
-- [ ] **Upcoming hearings view** — Show cases with scheduled hearings
+**Completed Features (Phase 3):**
+- [x] **Calendar integration** — Fetches hearing dates from DCOZ Calendar via CORS proxy, shows next upcoming hearing per case
+- [x] **Upcoming hearings view** — Only future hearings displayed, uniform blue badges
+
+**Remaining Features:**
+- [ ] **Default date range** - Remove default values from this field so that all cases are searched by default. Clarify what the field is searching on.
+- [ ] **Meeting type** - Add meeting type (public hear, public meeting, etc) to data. List in chart.
 - [ ] **Cases without action** — Highlight cases pending action
 
 **Notes:**
-- Design Review (Layer 45) has no recent cases — most recent is case 15-23 filed 9/9/2015
+- Layer 44 (Design Review) cases are classified as ZC
+- Previously used Layer 34/45 on Planning_Landuse_and_Zoning_WebMercator/MapServer — that data was stale (last updated 2019), migrated to DCOZ/Zone_Mapservice in Feb 2026

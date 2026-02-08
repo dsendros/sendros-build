@@ -68,10 +68,6 @@
                                 <input type="checkbox" class="case-type-filter" value="BZA" checked>
                                 <span class="case-type-badge bza">BZA</span>
                             </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" class="case-type-filter" value="DR" checked>
-                                <span class="case-type-badge dr">DR</span>
-                            </label>
                         </div>
                     </div>
 
@@ -90,6 +86,9 @@
             <div class="active-filters" id="active-filters"></div>
         </div>
 
+        <!-- Calendar Status -->
+        <div class="calendar-status hidden" id="calendar-status"></div>
+
         <!-- Table View -->
         <div class="table-container" id="table-view">
             <table class="cases-table">
@@ -97,9 +96,11 @@
                     <tr>
                         <th data-sort="caseNumber" class="sortable">Case #</th>
                         <th data-sort="caseType" class="sortable">Type</th>
-                        <th data-sort="address" class="sortable">Address / Relief</th>
+                        <th data-sort="address" class="sortable">Address</th>
+                        <th data-sort="caseTypeRelief" class="sortable">Relief</th>
                         <th data-sort="anc" class="sortable">ANC</th>
                         <th data-sort="dateFiled" class="sortable sort-active sort-desc">Date Filed</th>
+                        <th data-sort="hearingDate" class="sortable">Hearing</th>
                     </tr>
                 </thead>
                 <tbody id="table-body"></tbody>

@@ -2,11 +2,15 @@
 
 // ===== Configuration =====
 const CONFIG = {
-    API_BASE: 'https://maps2.dcgis.dc.gov/dcgis/rest/services/DCGIS_DATA/Planning_Landuse_and_Zoning_WebMercator/MapServer',
-    LAYER_ZONING: 34,
-    LAYER_DESIGN_REVIEW: 45,
+    API_BASE: 'https://maps2.dcgis.dc.gov/dcgis/rest/services/DCOZ/Zone_Mapservice/MapServer',
+    CALENDAR_BASE: 'https://app.dcoz.dc.gov/Home/Calendar',
+    CORS_PROXY: 'https://corsproxy.io/?url=',
+    LAYER_ZONING: 46,
+    LAYER_DESIGN_REVIEW: 44,
     DEFAULT_DAYS_BACK: 180,
-    PAGE_SIZE: 2000,
+    PAGE_SIZE: 1000,
+    CALENDAR_MONTHS_BACK: 1,
+    CALENDAR_MONTHS_FORWARD: 1,
     STORAGE_KEYS: {
         VIEW_MODE: 'zoning_dashboard_view'
     }
@@ -14,8 +18,8 @@ const CONFIG = {
 
 // Field mappings for each layer
 const FIELD_MAP = {
-    layer34: ['CASE_NUMBER', 'CASE_TYPE', 'CASE_TYPE_RELIEF', 'PREMISE_ADDRESS', 'DESCRIPTION', 'EXISTINGZONING', 'REQUESTEDZONING', 'SSL', 'URL', 'ANCSMD', 'DATEFILED'],
-    layer45: ['DR_CASENUMBER', 'DR_CASEYPE', 'DR_NARRATIVE', 'DR_STATUS', 'DR_URL', 'DR_DATEFILED']
+    layer46: ['Case_ID', 'case_number', 'Case_Type', 'case_type_relief', 'reliefSought', 'Premise_Address', 'Description', 'existingZoning', 'requestedZoning', 'SSL', 'ANCSMD', 'dateFiled'],
+    layer44: ['DR_CaseNumber', 'DR_CaseType', 'DR_Narrative', 'DR_Status', 'DR_URL', 'DR_DateFiled']
 };
 
 // ===== Application State =====
@@ -25,7 +29,7 @@ const AppState = {
     filters: {
         dateFrom: null,
         dateTo: null,
-        caseTypes: ['ZC', 'BZA', 'DR'],
+        caseTypes: ['ZC', 'BZA'],
         searchText: ''
     },
     viewMode: 'table',
@@ -33,7 +37,10 @@ const AppState = {
     sortDir: 'desc',
     selectedCase: null,
     loading: false,
-    error: null
+    error: null,
+    calendarData: [],
+    calendarAvailable: null,
+    calendarError: null
 };
 
 // ===== Utility Functions =====
@@ -84,58 +91,81 @@ function getDefaultDateFrom() {
 }
 
 // ===== API Functions =====
+async function fetchAllPages(layerUrl, params) {
+    const allFeatures = [];
+    let offset = 0;
+
+    while (true) {
+        params.set('resultOffset', offset);
+        params.set('resultRecordCount', CONFIG.PAGE_SIZE);
+
+        const url = `${layerUrl}/query?${params}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error.message || 'API error');
+        }
+
+        const features = data.features || [];
+        allFeatures.push(...features);
+
+        if (data.exceededTransferLimit) {
+            offset += features.length;
+        } else {
+            break;
+        }
+    }
+
+    return allFeatures;
+}
+
 async function fetchZoningCases(dateFrom) {
+    const layerUrl = `${CONFIG.API_BASE}/${CONFIG.LAYER_ZONING}`;
+
     const whereClause = dateFrom
-        ? `DATEFILED >= DATE '${formatDateForAPI(dateFrom)}'`
+        ? `dateFiled >= DATE '${formatDateForAPI(dateFrom)}'`
         : '1=1';
 
     const params = new URLSearchParams({
         where: whereClause,
-        outFields: FIELD_MAP.layer34.join(','),
+        outFields: FIELD_MAP.layer46.join(','),
         f: 'json',
-        resultRecordCount: CONFIG.PAGE_SIZE
+        orderByFields: 'dateFiled DESC'
     });
 
-    const url = `${CONFIG.API_BASE}/${CONFIG.LAYER_ZONING}/query?${params}`;
-    const response = await fetch(url);
+    const features = await fetchAllPages(layerUrl, params);
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch zoning cases: ${response.status}`);
+    // Deduplicate by Case_ID (multiple records per case for different parcels)
+    const seen = new Map();
+    for (const f of features) {
+        const caseId = f.attributes.Case_ID;
+        if (!seen.has(caseId)) {
+            seen.set(caseId, f.attributes);
+        }
     }
 
-    const data = await response.json();
-
-    if (data.error) {
-        throw new Error(data.error.message || 'API error');
-    }
-
-    return (data.features || []).map(f => normalizeZoningCase(f.attributes));
+    return Array.from(seen.values()).map(attrs => normalizeZoningCase(attrs));
 }
 
 async function fetchDesignReviewCases(dateFrom) {
+    const layerUrl = `${CONFIG.API_BASE}/${CONFIG.LAYER_DESIGN_REVIEW}`;
+
     const params = new URLSearchParams({
         where: '1=1',
-        outFields: FIELD_MAP.layer45.join(','),
-        f: 'json',
-        resultRecordCount: CONFIG.PAGE_SIZE
+        outFields: FIELD_MAP.layer44.join(','),
+        f: 'json'
     });
 
-    const url = `${CONFIG.API_BASE}/${CONFIG.LAYER_DESIGN_REVIEW}/query?${params}`;
-    const response = await fetch(url);
+    const features = await fetchAllPages(layerUrl, params);
+    let cases = features.map(f => normalizeDesignReviewCase(f.attributes));
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch design review cases: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-        throw new Error(data.error.message || 'API error');
-    }
-
-    let cases = (data.features || []).map(f => normalizeDesignReviewCase(f.attributes));
-
-    // Filter by date client-side (DR_DATEFILED is a string field)
+    // Filter by date client-side (DR_DateFiled is a string field)
     if (dateFrom) {
         cases = cases.filter(c => c.dateFiled && c.dateFiled >= dateFrom);
     }
@@ -143,42 +173,194 @@ async function fetchDesignReviewCases(dateFrom) {
     return cases;
 }
 
-// ===== Data Normalization =====
-function normalizeZoningCase(attrs) {
-    const dateFiled = attrs.DATEFILED ? new Date(attrs.DATEFILED) : null;
-    const rawCaseNumber = attrs.CASE_NUMBER || '';
-    // Split "13-01 0848" to get just "13-01" (case number without SSL suffix)
-    const caseNumber = rawCaseNumber.split(' ')[0];
+// ===== Calendar Functions =====
+function getCalendarMonthRange() {
+    const now = new Date();
+    const months = [];
+    for (let offset = -CONFIG.CALENDAR_MONTHS_BACK; offset <= CONFIG.CALENDAR_MONTHS_FORWARD; offset++) {
+        const d = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+        months.push({ year: d.getFullYear(), month: d.getMonth() + 1 });
+    }
+    return months;
+}
 
-    // Build IZIS URL if not provided
-    let url = attrs.URL;
-    if (!url && caseNumber) {
-        url = `https://app.dcoz.dc.gov/Home/ViewCase?case_id=${encodeURIComponent(caseNumber)}`;
+function parseLongDate(str) {
+    // Parses "Wednesday, February 11, 2026" -> Date
+    const date = new Date(str);
+    if (isNaN(date)) return null;
+    return date;
+}
+
+function extractHearingType(heading) {
+    if (/closed\s+meeting/i.test(heading)) return 'Closed Meeting';
+    if (/hearing/i.test(heading)) return 'Public Hearing';
+    if (/meeting/i.test(heading)) return 'Public Meeting';
+    return heading;
+}
+
+function extractBodyType(heading) {
+    if (/board\s+of\s+zoning\s+adjustment|bza/i.test(heading)) return 'BZA';
+    if (/zoning\s+commission|zc/i.test(heading)) return 'ZC';
+    return null;
+}
+
+function extractVote(text) {
+    if (!text) return null;
+    const match = text.match(/\b(\d+-\d+-\d+)\b/);
+    return match ? match[1] : null;
+}
+
+function extractNextAction(text) {
+    if (!text) return null;
+    // If result text is longer than a simple verdict, it likely contains action info
+    const simpleResults = ['approved', 'denied', 'withdrawn', 'postponed', 'rescheduled'];
+    const lower = text.toLowerCase().trim();
+    if (simpleResults.includes(lower)) return null;
+    // If it contains date-like info or action phrases, return the full text
+    if (text.length > 15 || /\b(due|order|action|february|march|april|may|june|july|august|september|october|november|december|january)\b/i.test(text)) {
+        return text;
+    }
+    return null;
+}
+
+function parseCalendarHTML(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const entries = [];
+
+    // Structure: accordion-item > accordion-header > button > div.row.w-100 (date/type/time)
+    //            accordion-item > accordion-collapse > accordion-body (h3, table with cases)
+    const items = doc.querySelectorAll('.accordion-item');
+
+    for (const item of items) {
+        // Header row contains date, meeting type, and time in col-sm-3 / col-sm-2 divs
+        const headerRow = item.querySelector('div.row.w-100');
+        if (!headerRow) continue;
+
+        const cols = headerRow.querySelectorAll('[class*="col-sm-"]');
+        // cols: [0]=dot, [1]=date, [2]=meeting type, [3]=time, [4]=extra
+        if (cols.length < 4) continue;
+
+        const hearingDate = parseLongDate(cols[1].textContent.trim());
+        if (!hearingDate) continue;
+
+        // Meeting type from header (e.g. "BZA Public Hearing")
+        const meetingTypeText = cols[2].textContent.trim();
+        const currentBodyType = extractBodyType(meetingTypeText);
+        const currentType = extractHearingType(meetingTypeText);
+
+        // Time from header
+        const timeText = cols[3].textContent.trim();
+        const timeMatch = timeText.match(/(\d{1,2}:\d{2}\s*[AP]M)/i);
+        const currentTime = timeMatch ? timeMatch[1].trim() : null;
+
+        // Cases from the table inside accordion-body
+        const body = item.querySelector('.accordion-body');
+        if (!body) continue;
+
+        for (const table of body.querySelectorAll('table')) {
+            for (const tr of table.querySelectorAll('tbody tr')) {
+                const cells = tr.querySelectorAll('td');
+                if (cells.length < 2) continue;
+
+                const caseLink = cells[0].querySelector('a');
+                const caseNumber = cells[0].textContent.trim();
+                const caseName = cells[1].textContent.trim();
+                const resultText = cells.length > 2 ? cells[2].textContent.trim() : '';
+
+                let caseId = null;
+                if (caseLink) {
+                    const href = caseLink.getAttribute('href') || '';
+                    const idMatch = href.match(/case_id=([^&]+)/i);
+                    if (idMatch) caseId = decodeURIComponent(idMatch[1]);
+                }
+
+                entries.push({
+                    caseNumber: caseNumber,
+                    caseId: caseId || caseNumber,
+                    caseName: caseName,
+                    hearingDate: hearingDate,
+                    hearingTime: currentTime,
+                    hearingType: currentType,
+                    bodyType: currentBodyType,
+                    hearingResult: resultText || null,
+                    hearingVote: extractVote(resultText),
+                    nextAction: extractNextAction(resultText)
+                });
+            }
+        }
     }
 
+    return entries;
+}
+
+async function fetchCalendarMonth(year, month) {
+    const calendarUrl = `${CONFIG.CALENDAR_BASE}?year=${year}&month=${month}`;
+    const url = `${CONFIG.CORS_PROXY}${encodeURIComponent(calendarUrl)}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Calendar HTTP ${response.status}`);
+    const html = await response.text();
+    return parseCalendarHTML(html);
+}
+
+async function fetchAllCalendarData() {
+    const months = getCalendarMonthRange();
+    const results = await Promise.allSettled(
+        months.map(m => fetchCalendarMonth(m.year, m.month))
+    );
+
+    const fulfilled = results.filter(r => r.status === 'fulfilled');
+    const rejected = results.filter(r => r.status === 'rejected');
+
+    // If ALL fetches failed, propagate the error so the caller knows
+    if (fulfilled.length === 0 && rejected.length > 0) {
+        throw rejected[0].reason || new Error('All calendar fetches failed');
+    }
+
+    if (rejected.length > 0) {
+        console.warn(`Calendar: ${rejected.length} of ${results.length} month fetches failed`);
+    }
+
+    return fulfilled.flatMap(r => r.value);
+}
+
+// ===== Data Normalization =====
+function normalizeZoningCase(attrs) {
+    const dateFiled = attrs.dateFiled ? new Date(attrs.dateFiled) : null;
+    const caseNumber = attrs.Case_ID || '';
+
+    const url = caseNumber
+        ? `https://app.dcoz.dc.gov/Home/ViewCase?case_id=${encodeURIComponent(caseNumber)}`
+        : '';
+
     return {
-        id: rawCaseNumber || `zc-${Math.random().toString(36).substr(2, 9)}`,
+        id: caseNumber || `zc-${Math.random().toString(36).substr(2, 9)}`,
         caseNumber: caseNumber,
-        caseType: attrs.CASE_TYPE || 'ZC',
-        caseTypeRelief: attrs.CASE_TYPE_RELIEF || '',
-        address: attrs.PREMISE_ADDRESS || '',
-        description: attrs.DESCRIPTION || '',
-        existingZoning: attrs.EXISTINGZONING || '',
-        requestedZoning: attrs.REQUESTEDZONING || '',
+        caseType: attrs.Case_Type || 'ZC',
+        caseTypeRelief: attrs.case_type_relief || attrs.reliefSought || '',
+        address: attrs.Premise_Address || '',
+        description: attrs.Description || '',
+        existingZoning: attrs.existingZoning || '',
+        requestedZoning: attrs.requestedZoning || '',
         ssl: attrs.SSL || '',
         url: url,
         anc: attrs.ANCSMD || '',
         status: null,
         dateFiled: dateFiled,
-        source: 'layer34'
+        source: 'layer46',
+        hearingDate: null,
+        hearingTime: null,
+        hearingType: null,
+        hearingResult: null,
+        hearingVote: null,
+        nextAction: null
     };
 }
 
 function normalizeDesignReviewCase(attrs) {
-    const dateFiled = parseDRDate(attrs.DR_DATEFILED);
-    const caseNumber = attrs.DR_CASENUMBER || '';
+    const dateFiled = parseDRDate(attrs.DR_DateFiled);
+    const caseNumber = attrs.DR_CaseNumber || '';
 
-    // Build IZIS URL if not provided
     let url = attrs.DR_URL;
     if (!url && caseNumber) {
         url = `https://app.dcoz.dc.gov/Home/ViewCase?case_id=${encodeURIComponent(caseNumber)}`;
@@ -187,19 +369,84 @@ function normalizeDesignReviewCase(attrs) {
     return {
         id: caseNumber || `dr-${Math.random().toString(36).substr(2, 9)}`,
         caseNumber: caseNumber,
-        caseType: 'DR',
-        caseTypeRelief: attrs.DR_CASEYPE || '',
+        caseType: 'ZC',
+        caseTypeRelief: attrs.DR_CaseType || '',
         address: '',
-        description: attrs.DR_NARRATIVE || '',
+        description: attrs.DR_Narrative || '',
         existingZoning: '',
         requestedZoning: '',
         ssl: '',
         url: url,
         anc: '',
-        status: attrs.DR_STATUS || '',
+        status: attrs.DR_Status || '',
         dateFiled: dateFiled,
-        source: 'layer45'
+        source: 'layer44',
+        hearingDate: null,
+        hearingTime: null,
+        hearingType: null,
+        hearingResult: null,
+        hearingVote: null,
+        nextAction: null
     };
+}
+
+// ===== Calendar Merge =====
+function mergeCalendarData(cases, calendarEntries) {
+    // Build lookup from case ID/number to calendar entries
+    const calendarMap = new Map();
+    for (const entry of calendarEntries) {
+        const key = entry.caseId;
+        if (!calendarMap.has(key)) {
+            calendarMap.set(key, []);
+        }
+        calendarMap.get(key).push(entry);
+        // Also index by caseNumber if different from caseId
+        if (entry.caseNumber !== entry.caseId && !calendarMap.has(entry.caseNumber)) {
+            calendarMap.set(entry.caseNumber, []);
+        }
+        if (entry.caseNumber !== entry.caseId) {
+            calendarMap.get(entry.caseNumber).push(entry);
+        }
+    }
+
+    let matchCount = 0;
+    const matchedCaseIds = new Set();
+    for (const c of cases) {
+        const hearings = calendarMap.get(c.id) || calendarMap.get(c.caseNumber);
+        if (hearings && hearings.length > 0) {
+            // Only show future hearings — pick the soonest upcoming one
+            const now = new Date();
+            const future = hearings.filter(h => h.hearingDate > now);
+            if (future.length === 0) continue;
+            const next = future.sort((a, b) => a.hearingDate - b.hearingDate)[0];
+            c.hearingDate = next.hearingDate;
+            c.hearingTime = next.hearingTime;
+            c.hearingType = next.hearingType;
+            c.hearingResult = next.hearingResult;
+            c.hearingVote = next.hearingVote;
+            c.nextAction = next.nextAction;
+            matchCount++;
+            // Track all caseIds that matched
+            for (const h of hearings) {
+                matchedCaseIds.add(h.caseId);
+            }
+        }
+    }
+
+    // Log unmatched calendar entries for investigation
+    const unmatched = calendarEntries.filter(e => !matchedCaseIds.has(e.caseId));
+    if (unmatched.length > 0) {
+        console.log(`Calendar merge: ${matchCount} matched, ${unmatched.length} unmatched entries:`);
+        console.table(unmatched.map(e => ({
+            caseId: e.caseId,
+            caseNumber: e.caseNumber,
+            hearingDate: e.hearingDate?.toLocaleDateString() || 'N/A',
+            bodyType: e.bodyType,
+            hearingType: e.hearingType
+        })));
+    }
+
+    return matchCount;
 }
 
 // ===== Data Loading =====
@@ -211,15 +458,33 @@ async function loadAllCases() {
     try {
         const dateFrom = AppState.filters.dateFrom || getDefaultDateFrom();
 
-        const [zoningCases, drCases] = await Promise.all([
+        const [zoningCases, drCases, calendarResult] = await Promise.all([
             fetchZoningCases(dateFrom),
-            fetchDesignReviewCases(dateFrom)
+            fetchDesignReviewCases(dateFrom),
+            fetchAllCalendarData()
+                .then(data => ({ ok: true, data }))
+                .catch(err => ({ ok: false, error: err }))
         ]);
 
         AppState.cases = [...zoningCases, ...drCases];
+
+        if (calendarResult.ok) {
+            AppState.calendarAvailable = true;
+            AppState.calendarData = calendarResult.data;
+            AppState.calendarError = null;
+            const matchCount = mergeCalendarData(AppState.cases, calendarResult.data);
+            console.log(`Calendar: ${calendarResult.data.length} entries, ${matchCount} matched to cases`);
+        } else {
+            AppState.calendarAvailable = false;
+            AppState.calendarData = [];
+            AppState.calendarError = calendarResult.error.message;
+            console.warn('Calendar data unavailable:', calendarResult.error);
+        }
+
         applyFiltersAndSort();
         hideLoadingState();
         renderResults();
+        renderCalendarStatus();
     } catch (error) {
         console.error('Failed to load cases:', error);
         AppState.error = error.message;
@@ -245,7 +510,7 @@ function applyFiltersAndSort() {
     }
 
     // Case type filter
-    if (AppState.filters.caseTypes.length > 0 && AppState.filters.caseTypes.length < 3) {
+    if (AppState.filters.caseTypes.length > 0 && AppState.filters.caseTypes.length < 2) {
         results = results.filter(c => AppState.filters.caseTypes.includes(c.caseType));
     }
 
@@ -314,6 +579,31 @@ function showEmptyState() {
 }
 
 // ===== Rendering Functions =====
+function getHearingBadgeClass(c) {
+    if (!c.hearingDate) return '';
+    return 'hearing-upcoming';
+}
+
+function renderCalendarStatus() {
+    const el = document.getElementById('calendar-status');
+    if (AppState.calendarAvailable === null) {
+        el.classList.add('hidden');
+        return;
+    }
+
+    el.classList.remove('hidden');
+    if (AppState.calendarAvailable) {
+        const matched = AppState.cases.filter(c => c.hearingDate).length;
+        el.className = 'calendar-status calendar-ok';
+        el.textContent = matched > 0
+            ? `Calendar: ${AppState.calendarData.length} hearings loaded, ${matched} matched to cases`
+            : `Calendar loaded, no matching hearings found in current date range`;
+    } else {
+        el.className = 'calendar-status calendar-warn';
+        el.textContent = 'Hearing dates unavailable (calendar could not be reached)';
+    }
+}
+
 function renderResults() {
     updateResultsSummary();
 
@@ -388,9 +678,13 @@ function renderTableView() {
                     ${c.caseType}
                 </span>
             </td>
-            <td>${escapeHtml(c.address || c.caseTypeRelief || '-')}</td>
+            <td>${escapeHtml(c.address || '-')}</td>
+            <td>${escapeHtml(c.caseTypeRelief || '-')}</td>
             <td>${escapeHtml(c.anc || '-')}</td>
             <td>${formatDate(c.dateFiled)}</td>
+            <td>${c.hearingDate
+                ? `<span class="hearing-badge ${getHearingBadgeClass(c)}">${formatDate(c.hearingDate)}</span>`
+                : '-'}</td>
         </tr>
     `).join('');
 
@@ -417,6 +711,14 @@ function renderCardView() {
             ${c.caseTypeRelief ? `<div class="case-relief">${escapeHtml(c.caseTypeRelief)}</div>` : ''}
             ${c.description ? `<div class="case-description">${escapeHtml(truncateText(c.description, 150))}</div>` : ''}
             ${c.anc ? `<div class="case-anc">ANC: ${escapeHtml(c.anc)}</div>` : ''}
+            ${c.hearingDate ? `
+                <div class="case-hearing">
+                    <span class="hearing-badge ${getHearingBadgeClass(c)}">
+                        Hearing: ${formatDate(c.hearingDate)}${c.hearingTime ? ' at ' + escapeHtml(c.hearingTime) : ''}
+                    </span>
+                    ${c.hearingResult ? `<span class="hearing-result">${escapeHtml(c.hearingResult)}</span>` : ''}
+                </div>
+            ` : ''}
         </div>
     `).join('');
 
@@ -452,6 +754,20 @@ function renderDetailModal(caseData) {
                 ${caseData.status ? `<dt>Status</dt><dd>${escapeHtml(caseData.status)}</dd>` : ''}
             </dl>
         </div>
+
+        ${caseData.hearingDate ? `
+            <div class="detail-section">
+                <h3>Hearing Information</h3>
+                <dl class="detail-list">
+                    <dt>Hearing Date</dt><dd>${formatDate(caseData.hearingDate)}</dd>
+                    ${caseData.hearingTime ? `<dt>Time</dt><dd>${escapeHtml(caseData.hearingTime)}</dd>` : ''}
+                    ${caseData.hearingType ? `<dt>Type</dt><dd>${escapeHtml(caseData.hearingType)}</dd>` : ''}
+                    ${caseData.hearingResult ? `<dt>Result</dt><dd>${escapeHtml(caseData.hearingResult)}</dd>` : ''}
+                    ${caseData.hearingVote ? `<dt>Vote</dt><dd>${escapeHtml(caseData.hearingVote)}</dd>` : ''}
+                    ${caseData.nextAction ? `<dt>Next Action</dt><dd>${escapeHtml(caseData.nextAction)}</dd>` : ''}
+                </dl>
+            </div>
+        ` : ''}
 
         ${caseData.existingZoning || caseData.requestedZoning ? `
             <div class="detail-section">

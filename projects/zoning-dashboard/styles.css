@@ -588,6 +588,97 @@
     white-space: pre-wrap;
 }
 
+/* ===== Calendar Status Banner ===== */
+.calendar-status {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.calendar-status.hidden {
+    display: none;
+}
+
+.calendar-status.calendar-ok {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.calendar-status.calendar-warn {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.dark-mode .calendar-status.calendar-ok {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+.dark-mode .calendar-status.calendar-warn {
+    background: #713f12;
+    color: #fef08a;
+}
+
+/* ===== Hearing Badges ===== */
+.hearing-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.hearing-upcoming {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.hearing-past {
+    background: var(--chip-bg);
+    color: var(--text-color);
+}
+
+.hearing-result-approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.hearing-result-postponed {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.dark-mode .hearing-upcoming {
+    background: #1e3a5f;
+    color: #93c5fd;
+}
+
+.dark-mode .hearing-result-approved {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+.dark-mode .hearing-result-postponed {
+    background: #713f12;
+    color: #fef08a;
+}
+
+/* Hearing info in card view */
+.case-hearing {
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.hearing-result {
+    font-size: 12px;
+    color: var(--text-color);
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .dashboard-page {
