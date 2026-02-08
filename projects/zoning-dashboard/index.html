@@ -48,11 +48,12 @@
                 <div class="filters-grid">
                     <!-- Date Range -->
                     <div class="filter-group">
-                        <label>Date Range</label>
+                        <label>Hearing Date Range</label>
                         <div class="date-range">
                             <input type="date" id="date-from">
                             <span>to</span>
                             <input type="date" id="date-to">
+                            <button type="button" id="date-clear" class="date-clear-btn" title="Clear date range">&times;</button>
                         </div>
                     </div>
 
@@ -99,8 +100,8 @@
                         <th data-sort="address" class="sortable">Address</th>
                         <th data-sort="caseTypeRelief" class="sortable">Relief</th>
                         <th data-sort="anc" class="sortable">ANC</th>
-                        <th data-sort="dateFiled" class="sortable sort-active sort-desc">Date Filed</th>
-                        <th data-sort="hearingDate" class="sortable">Hearing</th>
+                        <th data-sort="hearingDate" class="sortable sort-active">Hearing Date</th>
+                        <th data-sort="hearingType" class="sortable">Hearing Type</th>
                     </tr>
                 </thead>
                 <tbody id="table-body"></tbody>

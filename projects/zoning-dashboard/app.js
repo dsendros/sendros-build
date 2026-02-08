@@ -33,8 +33,8 @@ const AppState = {
         searchText: ''
     },
     viewMode: 'table',
-    sortBy: 'dateFiled',
-    sortDir: 'desc',
+    sortBy: 'hearingDate',
+    sortDir: 'asc',
     selectedCase: null,
     loading: false,
     error: null,
@@ -125,15 +125,11 @@ async function fetchAllPages(layerUrl, params) {
     return allFeatures;
 }
 
-async function fetchZoningCases(dateFrom) {
+async function fetchZoningCases() {
     const layerUrl = `${CONFIG.API_BASE}/${CONFIG.LAYER_ZONING}`;
 
-    const whereClause = dateFrom
-        ? `dateFiled >= DATE '${formatDateForAPI(dateFrom)}'`
-        : '1=1';
-
     const params = new URLSearchParams({
-        where: whereClause,
+        where: '1=1',
         outFields: FIELD_MAP.layer46.join(','),
         f: 'json',
         orderByFields: 'dateFiled DESC'
@@ -153,7 +149,7 @@ async function fetchZoningCases(dateFrom) {
     return Array.from(seen.values()).map(attrs => normalizeZoningCase(attrs));
 }
 
-async function fetchDesignReviewCases(dateFrom) {
+async function fetchDesignReviewCases() {
     const layerUrl = `${CONFIG.API_BASE}/${CONFIG.LAYER_DESIGN_REVIEW}`;
 
     const params = new URLSearchParams({
@@ -164,11 +160,6 @@ async function fetchDesignReviewCases(dateFrom) {
 
     const features = await fetchAllPages(layerUrl, params);
     let cases = features.map(f => normalizeDesignReviewCase(f.attributes));
-
-    // Filter by date client-side (DR_DateFiled is a string field)
-    if (dateFrom) {
-        cases = cases.filter(c => c.dateFiled && c.dateFiled >= dateFrom);
-    }
 
     return cases;
 }
@@ -456,11 +447,9 @@ async function loadAllCases() {
     showLoadingState();
 
     try {
-        const dateFrom = AppState.filters.dateFrom || getDefaultDateFrom();
-
         const [zoningCases, drCases, calendarResult] = await Promise.all([
-            fetchZoningCases(dateFrom),
-            fetchDesignReviewCases(dateFrom),
+            fetchZoningCases(),
+            fetchDesignReviewCases(),
             fetchAllCalendarData()
                 .then(data => ({ ok: true, data }))
                 .catch(err => ({ ok: false, error: err }))
@@ -499,14 +488,14 @@ async function loadAllCases() {
 function applyFiltersAndSort() {
     let results = [...AppState.cases];
 
-    // Date range filter
+    // Hearing date range filter
     if (AppState.filters.dateFrom) {
-        results = results.filter(c => c.dateFiled && c.dateFiled >= AppState.filters.dateFrom);
+        results = results.filter(c => c.hearingDate && c.hearingDate >= AppState.filters.dateFrom);
     }
     if (AppState.filters.dateTo) {
         const endOfDay = new Date(AppState.filters.dateTo);
         endOfDay.setHours(23, 59, 59, 999);
-        results = results.filter(c => c.dateFiled && c.dateFiled <= endOfDay);
+        results = results.filter(c => c.hearingDate && c.hearingDate <= endOfDay);
     }
 
     // Case type filter
@@ -522,7 +511,11 @@ function applyFiltersAndSort() {
             (c.address && c.address.toLowerCase().includes(search)) ||
             (c.description && c.description.toLowerCase().includes(search)) ||
             (c.caseTypeRelief && c.caseTypeRelief.toLowerCase().includes(search)) ||
-            (c.anc && c.anc.toLowerCase().includes(search))
+            (c.anc && c.anc.toLowerCase().includes(search)) ||
+            (c.hearingType && c.hearingType.toLowerCase().includes(search)) ||
+            (c.hearingResult && c.hearingResult.toLowerCase().includes(search)) ||
+            (c.nextAction && c.nextAction.toLowerCase().includes(search)) ||
+            (c.caseName && c.caseName.toLowerCase().includes(search))
         );
     }
 
@@ -681,10 +674,10 @@ function renderTableView() {
             <td>${escapeHtml(c.address || '-')}</td>
             <td>${escapeHtml(c.caseTypeRelief || '-')}</td>
             <td>${escapeHtml(c.anc || '-')}</td>
-            <td>${formatDate(c.dateFiled)}</td>
             <td>${c.hearingDate
                 ? `<span class="hearing-badge ${getHearingBadgeClass(c)}">${formatDate(c.hearingDate)}</span>`
                 : '-'}</td>
+            <td>${escapeHtml(c.hearingType || '-')}</td>
         </tr>
     `).join('');
 
@@ -701,7 +694,6 @@ function renderCardView() {
                     <a class="case-link" data-url="${escapeHtml(c.url)}" data-case-id="${escapeHtml(c.id)}">
                         ${escapeHtml(c.caseNumber)}
                     </a>
-                    <div class="case-date">${formatDate(c.dateFiled)}</div>
                 </div>
                 <span class="case-type-badge ${c.caseType.toLowerCase()}">
                     ${c.caseType}
@@ -714,7 +706,7 @@ function renderCardView() {
             ${c.hearingDate ? `
                 <div class="case-hearing">
                     <span class="hearing-badge ${getHearingBadgeClass(c)}">
-                        Hearing: ${formatDate(c.hearingDate)}${c.hearingTime ? ' at ' + escapeHtml(c.hearingTime) : ''}
+                        ${c.hearingType ? escapeHtml(c.hearingType) : 'Hearing'}: ${formatDate(c.hearingDate)}${c.hearingTime ? ' at ' + escapeHtml(c.hearingTime) : ''}
                     </span>
                     ${c.hearingResult ? `<span class="hearing-result">${escapeHtml(c.hearingResult)}</span>` : ''}
                 </div>
@@ -748,8 +740,7 @@ function renderDetailModal(caseData) {
             <dl class="detail-list">
                 ${caseData.caseTypeRelief ? `<dt>Relief Type</dt><dd>${escapeHtml(caseData.caseTypeRelief)}</dd>` : ''}
                 ${caseData.address ? `<dt>Address</dt><dd><a href="https://www.google.com/maps/search/${encodeURIComponent(caseData.address + ', Washington, DC')}" target="_blank" rel="noopener">${escapeHtml(caseData.address)}</a></dd>` : ''}
-                ${caseData.dateFiled ? `<dt>Date Filed</dt><dd>${formatDate(caseData.dateFiled)}</dd>` : ''}
-                ${caseData.anc ? `<dt>ANC/SMD</dt><dd>${escapeHtml(caseData.anc)}</dd>` : ''}
+${caseData.anc ? `<dt>ANC/SMD</dt><dd>${escapeHtml(caseData.anc)}</dd>` : ''}
                 ${caseData.ssl ? `<dt>SSL</dt><dd><a href="https://maps.dcoz.dc.gov/" target="_blank" rel="noopener">${escapeHtml(caseData.ssl)}</a></dd>` : ''}
                 ${caseData.status ? `<dt>Status</dt><dd>${escapeHtml(caseData.status)}</dd>` : ''}
             </dl>
@@ -852,11 +843,22 @@ function setupFilterListeners() {
     // Date range
     document.getElementById('date-from').addEventListener('change', (e) => {
         AppState.filters.dateFrom = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
-        loadAllCases(); // Reload from API with new date
+        applyFiltersAndSort();
+        renderResults();
     });
 
     document.getElementById('date-to').addEventListener('change', (e) => {
         AppState.filters.dateTo = e.target.value ? new Date(e.target.value + 'T00:00:00') : null;
+        applyFiltersAndSort();
+        renderResults();
+    });
+
+    // Clear date range
+    document.getElementById('date-clear').addEventListener('click', () => {
+        document.getElementById('date-from').value = '';
+        document.getElementById('date-to').value = '';
+        AppState.filters.dateFrom = null;
+        AppState.filters.dateTo = null;
         applyFiltersAndSort();
         renderResults();
     });
@@ -972,14 +974,7 @@ function loadPreferences() {
 
 // ===== Initialization =====
 function setDefaultDateRange() {
-    const today = new Date();
-    const defaultFrom = getDefaultDateFrom();
-
-    document.getElementById('date-from').value = formatDateForInput(defaultFrom);
-    document.getElementById('date-to').value = formatDateForInput(today);
-
-    AppState.filters.dateFrom = defaultFrom;
-    AppState.filters.dateTo = today;
+    // No defaults — all cases show on initial load
 }
 
 function initApp() {
