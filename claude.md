@@ -28,6 +28,9 @@ sendros-build-website/
         ├── styles.css              # App-specific styles
         ├── app.js                  # Application JavaScript
         └── data-fields.csv         # Field documentation for DC zoning data sources
+├── functions/
+│   └── api/
+│       └── calendar.js             # Cloudflare Pages Function — proxies DCOZ calendar requests
 ```
 
 ## Features
@@ -178,7 +181,7 @@ A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify ca
 - `projects/zoning-dashboard/data-fields.csv` — Field documentation
 
 **Completed Features (Phase 3):**
-- [x] **Calendar integration** — Fetches hearing dates from DCOZ Calendar via CORS proxy, shows next upcoming hearing per case
+- [x] **Calendar integration** — Fetches hearing dates from DCOZ Calendar via Cloudflare Pages Function (falls back to `corsproxy.io` locally), shows next upcoming hearing per case
 - [x] **Upcoming hearings view** — Only future hearings displayed, uniform blue badges
 - [x] **Default date range** - Remove default values from this field so that all cases are searched by default. Clarify what the field is searching on.
 - [x] **Meeting type** - Add meeting type (public hear, public meeting, etc) to data. List in chart.
@@ -189,3 +192,4 @@ A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify ca
 **Notes:**
 - Layer 44 (Design Review) cases are classified as ZC
 - Previously used Layer 34/45 on Planning_Landuse_and_Zoning_WebMercator/MapServer — that data was stale (last updated 2019), migrated to DCOZ/Zone_Mapservice in Feb 2026
+- Calendar proxy: uses Cloudflare Pages Function (`functions/api/calendar.js`) in production; falls back to `corsproxy.io` for local development

@@ -104,7 +104,7 @@ The dashboard fetches hearing dates from the DCOZ IZIS calendar and merges them 
 ### What Was Built
 
 - **Calendar fetch pipeline**: `fetchCalendarMonth()` → `parseCalendarHTML()` → `mergeCalendarData()`
-- Uses CORS proxy (`corsproxy.io`) to fetch IZIS calendar pages (`app.dcoz.dc.gov/Home/Calendar?year=YYYY&month=M`)
+- Uses a Cloudflare Pages Function (`/api/calendar`) to proxy calendar requests server-side, falling back to `corsproxy.io` for local development
 - Parses server-rendered HTML using `DOMParser`, walking the Bootstrap accordion structure (`.accordion-item` → `.accordion-header` for date/type/time → `.accordion-body` for case tables)
 - Merges hearing data into existing cases by matching `caseId` from calendar links against `Case_ID` from ArcGIS
 - Only assigns future hearings to cases (filters `hearingDate > now`, picks the soonest upcoming)

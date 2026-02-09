@@ -484,7 +484,6 @@ async function loadAllCases() {
         applyFiltersAndSort();
         hideLoadingState();
         renderResults();
-        renderCalendarStatus();
     } catch (error) {
         console.error('Failed to load cases:', error);
         AppState.error = error.message;
@@ -588,25 +587,6 @@ function getHearingBadgeClass(c) {
     return 'hearing-upcoming';
 }
 
-function renderCalendarStatus() {
-    const el = document.getElementById('calendar-status');
-    if (AppState.calendarAvailable === null) {
-        el.classList.add('hidden');
-        return;
-    }
-
-    el.classList.remove('hidden');
-    if (AppState.calendarAvailable) {
-        const matched = AppState.cases.filter(c => c.hearingDate).length;
-        el.className = 'calendar-status calendar-ok';
-        el.textContent = matched > 0
-            ? `Calendar: ${AppState.calendarData.length} hearings loaded, ${matched} matched to cases`
-            : `Calendar loaded, no matching hearings found in current date range`;
-    } else {
-        el.className = 'calendar-status calendar-warn';
-        el.textContent = 'Hearing dates unavailable (calendar could not be reached)';
-    }
-}
 
 function renderResults() {
     updateResultsSummary();
