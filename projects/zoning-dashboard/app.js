@@ -3,8 +3,7 @@
 // ===== Configuration =====
 const CONFIG = {
     API_BASE: 'https://maps2.dcgis.dc.gov/dcgis/rest/services/DCOZ/Zone_Mapservice/MapServer',
-    CALENDAR_BASE: 'https://app.dcoz.dc.gov/Home/Calendar',
-    CORS_PROXY: 'https://corsproxy.io/?url=',
+    CALENDAR_PROXY: '/api/calendar',
     LAYER_ZONING: 46,
     LAYER_DESIGN_REVIEW: 44,
     DEFAULT_DAYS_BACK: 180,
@@ -286,8 +285,7 @@ function parseCalendarHTML(html) {
 }
 
 async function fetchCalendarMonth(year, month) {
-    const calendarUrl = `${CONFIG.CALENDAR_BASE}?year=${year}&month=${month}`;
-    const url = `${CONFIG.CORS_PROXY}${encodeURIComponent(calendarUrl)}`;
+    const url = `${CONFIG.CALENDAR_PROXY}?year=${year}&month=${month}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Calendar HTTP ${response.status}`);
     const html = await response.text();

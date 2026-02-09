@@ -180,10 +180,10 @@ A dashboard for tracking DC zoning cases, designed to help DC YIMBYs identify ca
 **Completed Features (Phase 3):**
 - [x] **Calendar integration** — Fetches hearing dates from DCOZ Calendar via CORS proxy, shows next upcoming hearing per case
 - [x] **Upcoming hearings view** — Only future hearings displayed, uniform blue badges
+- [x] **Default date range** - Remove default values from this field so that all cases are searched by default. Clarify what the field is searching on.
+- [x] **Meeting type** - Add meeting type (public hear, public meeting, etc) to data. List in chart.
 
 **Remaining Features:**
-- [ ] **Default date range** - Remove default values from this field so that all cases are searched by default. Clarify what the field is searching on.
-- [ ] **Meeting type** - Add meeting type (public hear, public meeting, etc) to data. List in chart.
 - [ ] **Cases without action** — Highlight cases pending action
 
 **Notes:**
