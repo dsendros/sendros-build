@@ -151,6 +151,10 @@ h2 {
     max-width: 600px;
 }
 
+.hero p + p {
+    margin-top: 1em;
+}
+
 /* About Section */
 .about p {
     max-width: 700px;
