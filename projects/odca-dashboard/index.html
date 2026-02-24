@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODCA Audit Recommendations | Sendros.Build</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="../../" class="logo">DS</a>
+            <ul>
+                <li><a href="../../#about">About</a></li>
+                <li><a href="../../#projects">Projects</a></li>
+                <li><a href="../../#contact">Contact</a></li>
+                <li><button id="theme-toggle" aria-label="Toggle dark mode">Dark</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dashboard-page">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>ODCA Audit Recommendations</h1>
+                <p>DC Auditor recommendations by agency, status, and report</p>
+            </div>
+            <div class="dashboard-controls">
+                <div class="save-list-controls">
+                    <select id="save-list-select" title="Save list"></select>
+                    <button id="new-list-btn" title="New save list">[+]</button>
+                    <button id="delete-list-btn" class="hidden" title="Delete list">&#x1F5D1;</button>
+                </div>
+                <button id="saved-toggle">Show Saved (0)</button>
+                <button id="clear-saved" class="hidden">Clear Saved</button>
+                <button id="export-csv-btn">Export CSV</button>
+                <button id="print-btn">Print</button>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="reports">Reports</button>
+                    <button class="view-btn" data-view="table">Recommendations</button>
+                    <button class="view-btn" data-view="scorecard">Scorecard</button>
+                    <button class="view-btn" data-view="charts">Charts</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Panel -->
+        <div class="filters-panel" id="filters-panel">
+            <div class="filters-header">
+                <h2>Filters</h2>
+                <button class="filters-toggle" id="filters-toggle" aria-label="Toggle filters">
+                    <span class="toggle-icon">&#9660;</span>
+                </button>
+            </div>
+            <div class="filters-body" id="filters-body">
+                <div class="filters-grid">
+                    <div class="filter-group filter-group-wide">
+                        <label for="search-input">Search</label>
+                        <input type="text" id="search-input" placeholder="Search recommendations, notes, report name, agency...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Agency</label>
+                        <div class="multi-select" id="agency-multi">
+                            <button class="multi-select-trigger" type="button">All Agencies</button>
+                            <div class="multi-select-dropdown hidden"></div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <div class="multi-select" id="status-multi">
+                            <button class="multi-select-trigger" type="button">All Statuses</button>
+                            <div class="multi-select-dropdown hidden">
+                                <label class="multi-select-option"><input type="checkbox" value="Implemented"> <span>Implemented</span></label>
+                                <label class="multi-select-option"><input type="checkbox" value="In progress"> <span>In progress</span></label>
+                                <label class="multi-select-option"><input type="checkbox" value="Not yet started"> <span>Not yet started</span></label>
+                                <label class="multi-select-option"><input type="checkbox" value="No action intended – management accepts the risk"> <span>No action intended</span></label>
+                                <label class="multi-select-option"><input type="checkbox" value="No information available"> <span>No information available</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Report</label>
+                        <div class="multi-select" id="report-multi">
+                            <button class="multi-select-trigger" type="button">All Reports</button>
+                            <div class="multi-select-dropdown hidden"></div>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="date-from-input">Report Date From</label>
+                        <input type="date" id="date-from-input">
+                    </div>
+                    <div class="filter-group">
+                        <label for="date-to-input">Report Date To</label>
+                        <input type="date" id="date-to-input">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary" id="results-summary">
+            <span class="results-count"></span>
+            <div class="active-filters" id="active-filters"></div>
+        </div>
+
+        <!-- No-Data State -->
+        <div class="no-data-state hidden" id="no-data-state">
+            <p>No recommendations loaded yet.</p>
+            <p>Run the converter to populate this dashboard:</p>
+            <pre>scripts/.venv/bin/python3 scripts/odca_converter.py</pre>
+        </div>
+
+        <!-- Table View -->
+        <div class="table-container hidden" id="table-view">
+            <table class="cases-table">
+                <thead>
+                    <tr>
+                        <th class="col-save"></th>
+                        <th data-sort="agency" class="sortable">Agency</th>
+                        <th data-sort="rec_no" class="sortable">Rec #</th>
+                        <th data-sort="report_name" class="sortable">Report</th>
+                        <th data-sort="report_date" class="sortable sort-active sort-desc">Date</th>
+                        <th data-sort="status" class="sortable">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- Report View -->
+        <div class="report-view hidden" id="report-view"></div>
+
+        <!-- Scorecard View -->
+        <div class="scorecard-view hidden" id="scorecard-view"></div>
+
+        <!-- Chart View -->
+        <div class="chart-view hidden" id="chart-view"></div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+            <p>No recommendations match your filters.</p>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal hidden" id="detail-modal">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="summaries.js"></script>
+    <script src="app.js"></script>
+    <script>
+        const toggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDarkMode = savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            toggle.textContent = 'Light';
+        }
+
+        toggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            toggle.textContent = isDark ? 'Light' : 'Dark';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+    </script>
+</body>
+</html>
