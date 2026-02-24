@@ -486,7 +486,7 @@ function renderReportView() {
                 <td>${escapeHtml(agencyDisplayName(r.agency) || '-')}</td>
                 <td>${r.rec_no || '-'}</td>
                 <td>${statusBadgeHtml(r.status)}</td>
-                <td class="rec-text-cell">${escapeHtml(truncateText(r.recommendation, 140) || '')}</td>
+                <td class="rec-text-cell">${escapeHtml(r.recommendation || '')}</td>
             </tr>
         `).join('');
 
@@ -579,7 +579,7 @@ function buildReportAccordionHtml(recs, agencyKey) {
             <tr>
                 <td>${r.rec_no || '-'}</td>
                 <td>${statusBadgeHtml(r.status)}</td>
-                <td class="rec-text-cell">${escapeHtml(truncateText(r.recommendation, 140) || '')}</td>
+                <td class="rec-text-cell">${escapeHtml(r.recommendation || '')}</td>
             </tr>
         `).join('');
 
