@@ -284,3 +284,137 @@ footer p {
         padding: 4rem 0;
     }
 }
+
+/* CLI Toggle Button */
+#cli-toggle {
+    background: none;
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-family: 'Courier New', Courier, monospace;
+    transition: all 0.3s ease;
+}
+
+#cli-toggle:hover,
+#cli-toggle.active {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* CLI Overlay */
+.cli-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background-color: var(--background-color);
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.cli-overlay.hidden {
+    display: none;
+}
+
+body.cli-active {
+    overflow: hidden;
+}
+
+.cli-output {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.cli-output::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cli-output::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cli-output::-webkit-scrollbar-thumb {
+    background: var(--text-color);
+    border-radius: 3px;
+    opacity: 0.5;
+}
+
+.cli-input-line {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--text-color);
+    flex-shrink: 0;
+}
+
+.cli-prompt {
+    color: var(--accent-color);
+    white-space: nowrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+}
+
+#cli-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--primary-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    caret-color: var(--accent-color);
+}
+
+.cli-line {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.cli-cmd {
+    color: var(--accent-color);
+}
+
+.cli-out {
+    color: var(--primary-color);
+}
+
+.cli-err {
+    color: #e17055;
+}
+
+.cli-dim {
+    color: var(--text-color);
+}
+
+.cli-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.cli-link:hover {
+    opacity: 0.8;
+}
+
+.cli-ascii {
+    color: var(--accent-color);
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.dark-mode #cli-input {
+    color: var(--primary-color);
+}
